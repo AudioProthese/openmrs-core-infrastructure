@@ -4,7 +4,7 @@ output "vnet_id" {
 }
 
 output "subnet_aca_id" {
-  description = "ID of the Subnet for ACA"
+  description = "ID of the Subnet for Azure Container Apps"
   value       = one([for s in azurerm_virtual_network.vnet.subnet : s.id if s.name == local.subnets.aca.name])
 }
 

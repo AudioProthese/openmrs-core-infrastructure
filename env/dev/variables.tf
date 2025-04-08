@@ -1,19 +1,24 @@
 variable "project_name" {
-  default = "openrmscore"
+  description = "Name of the project"
+  default     = "openrmscore"
 }
 
 variable "environment" {
-  default = "dev"
+  description = "Environment (e.g., dev, prod)"
+  default     = "dev"
 }
 
 variable "location" {
-  default = "francecentral"
+  description = "Azure location"
+  default     = "francecentral"
 }
 
 variable "resource_group_name" {
-  default = "rg-openrmscore-dev"
+  description = "Name of the Resource Group"
+  default     = "rg-openrmscore-dev"
 }
 
 variable "vnet_address_space" {
-  default = ["10.10.0.0/16"]
+  description = "List of address spaces for the Virtual Network (VNet)"
+  default     = ["10.10.0.0/16"]
 }

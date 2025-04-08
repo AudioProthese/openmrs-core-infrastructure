@@ -1,25 +1,25 @@
 variable "project_name" {
-  description = "Nom du projet"
+  description = "Name of the project"
   type        = string
 }
 
 variable "environment" {
-  description = "Environnement (ex: dev, prod)"
+  description = "Environment (e. g., dev, prod)"
   type        = string
 }
 
 variable "location" {
-  description = "Emplacement Azure"
+  description = "Azure location"
   type        = string
 }
 
 variable "resource_group_name" {
-  description = "Nom du Resource Group"
+  description = "Name of the Resource Group"
   type        = string
 }
 
 variable "vnet_address_space" {
-  description = "Liste des plages d’adresses du VNet"
+  description = "List of address spaces for the Virtual Network (VNet)"
   type        = list(string)
   default     = ["10.10.0.0/16"]
 }

@@ -30,6 +30,7 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = var.vnet_address_space
   tags                = local.tags
 
+ # Subnet for Azure Container Apps
   subnet {
     name             = local.subnets.aca.name
     address_prefixes = [local.subnets.aca.cidr]
@@ -42,18 +43,20 @@ resource "azurerm_virtual_network" "vnet" {
       }
     }
   }
+# Subnet for Application Gateway
   subnet {
     name             = local.subnets.appgw.name
     address_prefixes = [local.subnets.appgw.cidr]
     security_group   = azurerm_network_security_group.nsg_appgw.id
   }
+# Subnet for Database
   subnet {
     name             = local.subnets.db.name
     address_prefixes = [local.subnets.db.cidr]
     security_group   = azurerm_network_security_group.nsg_db.id
   }
 }
-
+# Network Security Group for Azure Container Apps
 resource "azurerm_network_security_group" "nsg_aca" {
   name                = "${local.name_prefix}-nsg-aca"
   location            = var.location
@@ -72,7 +75,7 @@ resource "azurerm_network_security_group" "nsg_aca" {
     destination_address_prefix = "*"
   }
 }
-
+# Network Security Group for Application Gateway
 resource "azurerm_network_security_group" "nsg_appgw" {
   name                = "${local.name_prefix}-nsg-appgw"
   location            = var.location
@@ -91,7 +94,7 @@ resource "azurerm_network_security_group" "nsg_appgw" {
     destination_address_prefix = "*"
   }
 }
-
+# Network Security Group for Database
 resource "azurerm_network_security_group" "nsg_db" {
   name                = "${local.name_prefix}-nsg-db"
   location            = var.location
