@@ -1,0 +1,22 @@
+name: Create Terraform plan (DEV)
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/dev/**'
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  plan:
+    uses: ./.github/workflows/terraform-plan.yml
+    with:
+      environment: dev
+    secrets: inherit
