@@ -1,5 +1,5 @@
 module "network" {
-  source              = "../../modules/network"
+  source              = "../modules/network"
   project_name        = var.project_name
   environment         = var.environment
   location            = var.location
@@ -8,7 +8,7 @@ module "network" {
 }
 
 module "acr" {
-  source = "../../modules/acr"
+  source              = "../modules/acr"
   acr_name            = "${var.project_name}${var.environment}acr"
   resource_group_name = var.resource_group_name
   location            = var.location
