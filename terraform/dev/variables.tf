@@ -27,3 +27,11 @@ variable "vnet_address_space" {
   default     = ["10.10.0.0/16"]
   type        = list(string)
 }
+
+variable "zone_name" {
+  description = "Name of the DNS zone (e.g., example.com)"
+  default     = "openrms.fchevalier.net"
+  type        = string
+}
+
+

@@ -1,8 +1,7 @@
 output "name_servers" {
-  value = var.public_dns_zone ? azurerm_dns_zone.public[0].name_servers : null
+  value = azurerm_dns_zone.public.name_servers
 }
 
-
 output "zone_name" {
-  value = var.zone_name
+  value = azurerm_dns_zone.public.name
 }

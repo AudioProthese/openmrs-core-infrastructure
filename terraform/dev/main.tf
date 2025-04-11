@@ -18,3 +18,9 @@ module "acr" {
     project     = var.project_name
   }
 }
+
+module "dns_zone" {
+  source              = "../modules/dns-zone"
+  zone_name           = var.zone_name
+  resource_group_name = var.resource_group_name
+}
