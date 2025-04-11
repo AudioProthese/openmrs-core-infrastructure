@@ -10,18 +10,6 @@ on:
         required: false
         default: "terraform/"
         type: string
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Set the environment to deploy"
-        required: true
-        default: "dev"
-        type: string
-      iac_path:
-        description: "Set the relative path of the IaC configuration"
-        required: false
-        default: "terraform/"
-        type: string
 
 permissions:
   contents: read
