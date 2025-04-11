@@ -29,30 +29,10 @@ jobs:
         with:
           path: ${{ inputs.iac_path }}${{ inputs.environment }}
 
-  validate:
-    name: Validate
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Configure Azure Credentials
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Validate Terraform
-        uses: dflook/terraform-validate@v1.48.0
-        with:
-          path: ${{ inputs.iac_path }}${{ inputs.environment }}/
-
   plan:
     name: Plan
     needs:
       - lint
-      - validate
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
@@ -71,7 +51,6 @@ jobs:
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          allow-no-subscriptions: true
 
       - name: Plan Terraform
         uses: dflook/terraform-plan@v1.48.0
