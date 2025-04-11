@@ -1,0 +1,8 @@
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.77.1  # Replace with the latest version
+    hooks:
+      - id: terraform_fmt
+        args: ["--args=-diff", "--args=-write=true"]  # Ensures code is formatted
+      - id: terraform_validate  # Validates Terraform configuration files
+      - id: terraform_tflint  # Lints Terraform files for best practices

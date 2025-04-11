@@ -1,0 +1,20 @@
+name: Apply Terraform plan (DEV)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/dev/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  apply:
+    uses: ./.github/workflows/terraform-apply.yml
+    with:
+      environment: dev
+    secrets: inherit

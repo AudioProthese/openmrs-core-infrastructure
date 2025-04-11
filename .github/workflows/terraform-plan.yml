@@ -1,0 +1,79 @@
+name: Create Terraform plan
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+      iac_path:
+        description: "Set the relative path of the IaC configuration"
+        required: false
+        default: "terraform/"
+        type: string
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Set the environment to deploy"
+        required: true
+        default: "dev"
+        type: string
+      iac_path:
+        description: "Set the relative path of the IaC configuration"
+        required: false
+        default: "terraform/"
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: terraform-fmt-check
+        uses: dflook/terraform-fmt-check@v1.48.0
+        with:
+          path: ${{ inputs.iac_path }}${{ inputs.environment }}
+
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Terraform
+        uses: dflook/terraform-validate@v1.48.0
+        with:
+          path: ${{ inputs.iac_path }}${{ inputs.environment }}/
+
+  plan:
+    name: Plan
+    needs:
+      - lint
+      - validate
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Azure Credentials
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
+          
+
+      - name: Plan Terraform
+        uses: dflook/terraform-plan@v1.48.0
+        with:
+          path: ${{ inputs.iac_path }}${{ inputs.environment }}/
