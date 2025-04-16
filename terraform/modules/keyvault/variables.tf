@@ -16,13 +16,11 @@ variable "location" {
 variable "sku_name" {
   description = "SKU du Key Vault (standard ou premium)"
   type        = string
-  default     = "standard"
 }
 
 variable "tags" {
   description = "Map de tags à appliquer au Key Vault"
   type        = map(string)
-  default     = {}
 }
 
 variable "tenant_id" {

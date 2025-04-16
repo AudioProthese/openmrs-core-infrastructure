@@ -22,23 +22,22 @@ module "dns_zone" {
   source              = "../modules/dns-zone"
   zone_name           = var.zone_name
   resource_group_name = var.resource_group_name
-  tags = var.tags
+  tags                = var.tags
 }
 
 module "db" {
-  source              = "../modules/db"
-  resource_group_name = var.resource_group_name
-  location            = var.location
-  server_name         = "${var.project_name}${var.environment}sql"
-  version             = "12.0"
-  administrator_login = "sqladmin"
-  administrator_login_password = "P@ssw0rd1234!"
-  public_network_access_enabled        = false
-  minimum_tls_version                  = "1.2"
-  outbound_network_restriction_enabled = false
-  identity_type                       = "SystemAssigned"
-  tags                = var.tags
-  
+  source                               = "../modules/db"
+  resource_group_name                  = var.resource_group_name
+  location                             = var.location
+  server_name                          = "${var.project_name}${var.environment}sql"
+  administrator_login                  = var.db_admin_login
+  administrator_login_password         = data.azurerm_key_vault_secret.db_admin_password.value
+  public_network_access_enabled        = var.db_public_network_access_enabled
+  minimum_tls_version                  = var.db_minimum_tls_version
+  outbound_network_restriction_enabled = var.db_outbound_network_restriction_enabled
+  identity_type                        = var.db_identity_type
+  identity_ids                         = var.db_identity_ids
+  tags                                 = var.tags
 }
 
 module "keyvault" {
@@ -47,9 +46,9 @@ module "keyvault" {
   resource_group_name = var.resource_group_name
   location            = var.location
 
-  tenant_id           = data.azurerm_client_config.current.tenant_id
-  object_id           = data.azurerm_client_config.current.object_id
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = data.azurerm_client_config.current.object_id
 
-  sku_name            = var.sku_name_keyvault
-  tags                = var.tags
+  sku_name = var.sku_name_keyvault
+  tags     = var.tags
 }

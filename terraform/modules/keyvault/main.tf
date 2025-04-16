@@ -6,7 +6,7 @@ resource "azurerm_key_vault" "this" {
   sku_name            = var.sku_name
 
   soft_delete_retention_days = 7
-  purge_protection_enabled = true
+  purge_protection_enabled   = true
 
   tags = var.tags
 
@@ -14,7 +14,7 @@ resource "azurerm_key_vault" "this" {
     tenant_id = var.tenant_id
     object_id = var.object_id
 
-    key_permissions    = ["Create","Get"]
-    secret_permissions = ["Set","Get","Delete","Purge","Recover"]
+    key_permissions    = ["Create", "Get"]
+    secret_permissions = ["Set", "Get", "Delete", "Purge", "Recover"]
   }
 }
