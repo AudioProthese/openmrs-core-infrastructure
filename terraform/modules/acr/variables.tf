@@ -16,11 +16,9 @@ variable "location" {
 variable "sku" {
   type        = string
   description = "SKU of the ACR. Options: Basic, Standard, Premium."
-  default     = "Basic"
 }
 
 variable "tags" {
   type        = map(string)
   description = "Tags to associate with the ACR."
-  default     = {}
 }

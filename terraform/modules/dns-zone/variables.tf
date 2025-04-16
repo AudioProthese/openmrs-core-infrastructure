@@ -17,3 +17,8 @@ variable "a_records" {
   }))
   default = []
 }
+
+variable "tags" {
+  description = "Tags à appliquer"
+  type        = map(string)
+}
