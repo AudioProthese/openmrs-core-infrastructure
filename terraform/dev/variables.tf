@@ -65,7 +65,8 @@ variable "subnets" {
       delegation = "Microsoft.App/environments"
     }
     appgw = {
-      cidr = "10.10.2.0/24"
+      cidr       = "10.10.2.0/24"
+      delegation = null
     }
   }
   type = map(object({

@@ -14,11 +14,14 @@ resource "azurerm_virtual_network" "vnet" {
     content {
       name             = "${local.name_prefix}-${subnet.key}"
       address_prefixes = [subnet.value.cidr]
-      delegation {
-        name = "${subnet.key}-delegation"
-        service_delegation {
-          name    = lookup(subnet.value, "delegation", null)
-          actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+      dynamic "delegation" {
+        for_each = subnet.value.delegation != null ? [subnet.value.delegation] : []
+        content {
+          name = "${subnet.key}-delegation"
+          service_delegation {
+            name    = delegation.value
+            actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+          }
         }
       }
     }

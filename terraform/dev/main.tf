@@ -1,3 +1,16 @@
+module "keyvault" {
+  source              = "../modules/keyvault"
+  key_vault_name      = "${var.project_name}-${var.environment}-kv"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = data.azurerm_client_config.current.object_id
+
+  sku_name = var.sku_name_keyvault
+  tags     = var.tags
+}
+
 module "network" {
   source              = "../modules/network"
   project_name        = var.project_name
@@ -38,17 +51,4 @@ module "db" {
   identity_type                        = var.db_identity_type
   identity_ids                         = var.db_identity_ids
   tags                                 = var.tags
-}
-
-module "keyvault" {
-  source              = "../modules/keyvault"
-  key_vault_name      = "${var.project_name}-${var.environment}-kv"
-  resource_group_name = var.resource_group_name
-  location            = var.location
-
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.azurerm_client_config.current.object_id
-
-  sku_name = var.sku_name_keyvault
-  tags     = var.tags
 }

@@ -10,5 +10,5 @@ output "subnet_ids" {
 
 output "nsg_ids" {
   description = "Map of Network Security Group IDs"
-  value       = { for nsg in azurerm_network_security_group.nsg : nsg.key => nsg.id }
+  value       = { for k, v in azurerm_network_security_group.nsg : k => v.id }
 }
