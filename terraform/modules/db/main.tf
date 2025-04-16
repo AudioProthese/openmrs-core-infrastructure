@@ -1,9 +1,3 @@
-resource "random_password" "sql_admin" {
-  length           = 16
-  special          = true
-  override_special = "!@#%&*()-_=+<>?/"
-}
-
 resource "azurerm_mssql_server" "this" {
   name                = var.server_name
   resource_group_name = var.resource_group_name
