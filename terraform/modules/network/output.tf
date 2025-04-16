@@ -5,10 +5,10 @@ output "vnet_id" {
 
 output "subnet_ids" {
   description = "Map of subnet IDs"
-  value = { for s in azurerm_virtual_network.vnet.subnet : s.name => s.id }
+  value       = { for s in azurerm_virtual_network.vnet.subnet : s.name => s.id }
 }
 
 output "nsg_ids" {
   description = "Map of Network Security Group IDs"
-  value = { for nsg in azurerm_network_security_group.nsg : nsg.key => nsg.id }
+  value       = { for nsg in azurerm_network_security_group.nsg : nsg.key => nsg.id }
 }
