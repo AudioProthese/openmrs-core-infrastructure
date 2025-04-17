@@ -3,12 +3,12 @@ output "vnet_id" {
   value       = azurerm_virtual_network.vnet.id
 }
 
-output "subnet_aca_id" {
-  description = "ID of the Subnet for Azure Container Apps"
-  value       = one([for s in azurerm_virtual_network.vnet.subnet : s.id if s.name == local.subnets.aca.name])
+output "subnet_ids" {
+  description = "Map of subnet IDs"
+  value       = { for s in azurerm_virtual_network.vnet.subnet : s.name => s.id }
 }
 
-output "subnet_appgw_id" {
-  description = "ID of the Subnet for the Application Gateway"
-  value       = one([for s in azurerm_virtual_network.vnet.subnet : s.id if s.name == local.subnets.appgw.name])
+output "nsg_ids" {
+  description = "Map of Network Security Group IDs"
+  value       = { for k, v in azurerm_network_security_group.nsg : k => v.id }
 }
