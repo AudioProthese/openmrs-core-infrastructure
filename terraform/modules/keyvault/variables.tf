@@ -32,3 +32,8 @@ variable "object_id" {
   description = "Object ID du principal qui aura les droits data-plane"
   type        = string
 }
+
+variable "admin_object_id" {
+  description = "Object ID of the admin user for the Key Vault"
+  type        = string
+}
