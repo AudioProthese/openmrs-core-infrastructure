@@ -110,3 +110,9 @@ variable "db_identity_ids" {
   type        = list(string)
   default     = []
 }
+
+variable "admin_object_id" {
+  description = "Object ID of the admin user for the Key Vault"
+  type        = string
+  default     = "7039aa21-edae-48d2-932b-51c35303ff75"
+}

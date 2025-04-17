@@ -4,8 +4,9 @@ module "keyvault" {
   resource_group_name = var.resource_group_name
   location            = var.location
 
-  tenant_id = data.azurerm_client_config.current.tenant_id
-  object_id = data.azurerm_client_config.current.object_id
+  tenant_id       = data.azurerm_client_config.current.tenant_id
+  object_id       = data.azurerm_client_config.current.object_id
+  admin_object_id = var.admin_object_id
 
   sku_name = var.sku_name_keyvault
   tags     = var.tags
