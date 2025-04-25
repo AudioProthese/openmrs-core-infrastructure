@@ -132,9 +132,9 @@ variable "db_identity_type" {
 variable "db_identity_ids" {
   description = "The list of identity IDs to assign to the database."
   type        = list(string)
-}
 
-## ------------------ Database variables ------------------ ###
+## ------------------ Database variables ------------------ ##
+  
 variable "database_name" {
   description = "The name of the MS SQL Database"
   type        = string

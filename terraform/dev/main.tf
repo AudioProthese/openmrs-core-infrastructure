@@ -1,5 +1,4 @@
 # 1. KV
-
 module "keyvault" {
   source                        = "../modules/keyvault"
   key_vault_name                = format("%s-%s-kv", var.project_name, var.environment)
