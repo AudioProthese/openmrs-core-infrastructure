@@ -123,8 +123,8 @@ revision_mode              = "Single"
 logs_destination           = "log-analytics"
 min_replicas               = 1
 max_replicas               = 5
-workload_profile_name      = ""
-workload_profile_type      = "D4"
+workload_profile_name      = "Consumption"
+workload_profile_type      = "Consumption"
 workload_profile_min_count = 1
 workload_profile_max_count = 3
 
