@@ -357,14 +357,3 @@ variable "environment_storage_access_mode" {
   description = "Access mode for the container app environment storage"
   type        = string
 }
-
-variable "primary_access_key" {
-  description = "Primary access key for the storage account"
-  type        = string
-}
-
-variable "openmrs_fileshare_name" {
-  description = "Name of the OpenMRS file share"
-  type        = string
-
-}
