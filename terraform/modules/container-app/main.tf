@@ -7,6 +7,13 @@ resource "azurerm_container_app_environment" "this" {
   logs_destination               = var.logs_destination
   log_analytics_workspace_id     = var.log_analytics_workspace_id
 
+  workload_profile {
+    name                  = var.workload_profile_name
+    workload_profile_type = var.workload_profile_type
+    minimum_count         = var.workload_profile_min_count
+    maximum_count         = var.workload_profile_max_count
+  }
+
   tags = var.tags
 }
 
@@ -15,6 +22,7 @@ resource "azurerm_container_app" "app" {
   resource_group_name          = var.resource_group_name
   container_app_environment_id = azurerm_container_app_environment.this.id
   revision_mode                = var.revision_mode
+  workload_profile_name        = var.workload_profile_name
 
   template {
     min_replicas = var.min_replicas

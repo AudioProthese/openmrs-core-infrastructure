@@ -159,7 +159,12 @@ module "container_app" {
   logs_destination               = var.logs_destination
   log_analytics_workspace_id     = module.monitoring_storage.log_analytics_workspace_id
   revision_mode                  = var.revision_mode
-  tags                           = var.tags
+
+  workload_profile_name      = var.workload_profile_name
+  workload_profile_type      = var.workload_profile_type
+  workload_profile_min_count = var.workload_profile_min_count
+  workload_profile_max_count = var.workload_profile_max_count
+  tags                       = var.tags
 
   # Scaling configuration
   min_replicas = var.min_replicas

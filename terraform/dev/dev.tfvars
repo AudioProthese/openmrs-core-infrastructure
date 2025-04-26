@@ -91,7 +91,7 @@ enable_backend_volume = true
 container_apps = {
   frontend = {
     name   = "frontend-app"
-    image  = "openrmscore-frontend"
+    image  = "openrmscoredevacr.azurecr.io/openrmscore-frontend:latest"
     cpu    = 1
     memory = "2Gi"
     env_vars = {
@@ -103,14 +103,14 @@ container_apps = {
   }
   backend = {
     name     = "backend-app"
-    image    = "openrmscore-backend:latest"
+    image    = "openrmscoredevacr.azurecr.io/openrmscore-backend:latest"
     cpu      = 1
     memory   = "2Gi"
     env_vars = {}
   }
   gateway = {
     name   = "gateway-app"
-    image  = "openrmscore-gateway:latest"
+    image  = "openrmscoredevacr.azurecr.io/openrmscore-gateway:latest"
     cpu    = 1
     memory = "2Gi"
     env_vars = {
@@ -119,10 +119,14 @@ container_apps = {
 }
 # Environment configuration
 
-revision_mode    = "Single"
-logs_destination = "log-analytics"
-min_replicas     = 1
-max_replicas     = 5
+revision_mode              = "Single"
+logs_destination           = "log-analytics"
+min_replicas               = 1
+max_replicas               = 5
+workload_profile_name      = "HealthProfile"
+workload_profile_type      = "D4"
+workload_profile_min_count = 1
+workload_profile_max_count = 3
 
 # Ingress configurations
 

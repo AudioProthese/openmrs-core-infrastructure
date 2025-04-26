@@ -202,3 +202,23 @@ variable "tags" {
   description = "Tags to apply to resources (provided by root module)"
   type        = map(string)
 }
+
+variable "workload_profile_name" {
+  description = "Name of the workload profile"
+  type        = string
+}
+
+variable "workload_profile_type" {
+  description = "Type of workload profile to use (e.g., D4, E4, etc.)"
+  type        = string
+}
+
+variable "workload_profile_min_count" {
+  description = "Minimum count of the workload profile"
+  type        = number
+}
+
+variable "workload_profile_max_count" {
+  description = "Maximum count of the workload profile"
+  type        = number
+}
