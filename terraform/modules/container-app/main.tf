@@ -25,7 +25,7 @@ resource "azurerm_container_app" "app" {
   resource_group_name          = var.resource_group_name
   container_app_environment_id = azurerm_container_app_environment.this.id
   revision_mode                = var.revision_mode
-  workload_profile_name        = var.workload_profile_name
+  workload_profile_name        = var.workload_profile_name != "" ? var.workload_profile_name : null
 
   template {
     min_replicas = var.min_replicas
