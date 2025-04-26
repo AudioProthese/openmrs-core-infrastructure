@@ -347,3 +347,13 @@ variable "container_apps" {
     env_vars = map(string)
   }))
 }
+
+variable "environment_storage_name" {
+  description = "Name of the container app environment storage integration"
+  type        = string
+}
+
+variable "environment_storage_access_mode" {
+  description = "Access mode for the container app environment storage"
+  type        = string
+}

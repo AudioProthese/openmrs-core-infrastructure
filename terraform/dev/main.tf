@@ -133,7 +133,12 @@ module "container_uai" {
       name                 = "kv-secrets-read"
       scope                = module.keyvault.key_vault_id
       role_definition_name = "Key Vault Secrets User"
-    }
+    },
+    {
+      name                 = "storage-file-contributor"
+      scope                = module.monitoring_storage.storage_account_id
+      role_definition_name = "Storage File Data SMB Share Contributor"
+    },
   ]
 }
 
@@ -150,15 +155,20 @@ module "container_app" {
   ]
 
   # Environment configuration
-  resource_group_name            = var.resource_group_name
-  location                       = var.location
-  container_app_environment_name = format("%s-%s-env", var.project_name, var.environment)
-  container_app_name             = format("%s-%s-app", var.project_name, var.environment)
-  aca_subnet_id                  = module.network.subnet_ids["aca"]
-  internal_load_balancer_enabled = var.internal_load_balancer_enabled
-  logs_destination               = var.logs_destination
-  log_analytics_workspace_id     = module.monitoring_storage.log_analytics_workspace_id
-  revision_mode                  = var.revision_mode
+  resource_group_name             = var.resource_group_name
+  location                        = var.location
+  container_app_environment_name  = format("%s-%s-env", var.project_name, var.environment)
+  container_app_name              = format("%s-%s-app", var.project_name, var.environment)
+  aca_subnet_id                   = module.network.subnet_ids["aca"]
+  internal_load_balancer_enabled  = var.internal_load_balancer_enabled
+  logs_destination                = var.logs_destination
+  log_analytics_workspace_id      = module.monitoring_storage.log_analytics_workspace_id
+  revision_mode                   = var.revision_mode
+  environment_storage_name        = var.environment_storage_name
+  environment_storage_access_mode = var.environment_storage_access_mode
+  storage_account_name            = module.monitoring_storage.storage_account_name
+  openmrs_fileshare_name          = module.monitoring_storage.openmrs_fileshare_name
+  primary_access_key              = module.monitoring_storage.primary_access_key
 
   workload_profile_name      = var.workload_profile_name
   workload_profile_type      = var.workload_profile_type
@@ -196,7 +206,6 @@ module "container_app" {
   enable_backend_volume = var.enable_backend_volume
   backend_volume_path   = "/openmrs/data"
   storage_type          = "AzureFile"
-  storage_account_name  = module.monitoring_storage.storage_account_name
 
   # Gateway container configuration 
   enable_gateway          = var.enable_gateway
