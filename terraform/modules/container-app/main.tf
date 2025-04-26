@@ -20,6 +20,15 @@ resource "azurerm_container_app_environment" "this" {
   tags = var.tags
 }
 
+resource "azurerm_container_app_environment_storage" "this" {
+  name                         = var.environment_storage_name
+  container_app_environment_id = azurerm_container_app_environment.this.id
+  account_name                 = var.storage_account_name
+  share_name                   = var.openmrs_fileshare_name
+  access_key                   = var.primary_access_key
+  access_mode                  = var.environment_storage_access_mode
+}
+
 resource "azurerm_container_app" "app" {
   name                         = var.container_app_name
   resource_group_name          = var.resource_group_name

@@ -119,15 +119,16 @@ container_apps = {
 }
 # Environment configuration
 
-revision_mode              = "Single"
-logs_destination           = "log-analytics"
-min_replicas               = 1
-max_replicas               = 5
-workload_profile_name      = "Consumption"
-workload_profile_type      = "Consumption"
-workload_profile_min_count = 1
-workload_profile_max_count = 3
-
+revision_mode                   = "Single"
+logs_destination                = "log-analytics"
+min_replicas                    = 1
+max_replicas                    = 5
+workload_profile_name           = "Consumption"
+workload_profile_type           = "Consumption"
+workload_profile_min_count      = 1
+workload_profile_max_count      = 3
+environment_storage_access_mode = "ReadWrite"
+environment_storage_name        = "openrms-storage"
 # Ingress configurations
 
 internal_load_balancer_enabled = true

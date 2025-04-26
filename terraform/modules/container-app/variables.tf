@@ -222,3 +222,24 @@ variable "workload_profile_max_count" {
   description = "Maximum count of the workload profile"
   type        = number
 }
+
+variable "environment_storage_name" {
+  description = "Name of the container app environment storage integration"
+  type        = string
+}
+
+variable "environment_storage_access_mode" {
+  description = "Access mode for the container app environment storage"
+  type        = string
+}
+
+variable "primary_access_key" {
+  description = "Primary access key for the storage account"
+  type        = string
+}
+
+variable "openmrs_fileshare_name" {
+  description = "Name of the OpenMRS file share"
+  type        = string
+
+}
