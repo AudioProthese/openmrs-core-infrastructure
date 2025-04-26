@@ -43,7 +43,7 @@ public_network_access_enabled = true
 enable_rbac_authorization     = true
 admin_object_id               = "7039aa21-edae-48d2-932b-51c35303ff75"
 
-
+# --- DNS ZONE --- # 
 zone_name = "openrms.fchevalier.net"
 
 
