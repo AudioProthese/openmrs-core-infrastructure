@@ -61,7 +61,7 @@ resource "azurerm_container_app" "app" {
           for_each = var.omrs_configs
           content {
             name        = env.key
-            secret_name = replace(env.key, "_", "-")
+            secret_name = lower(replace(env.key, "_", "-"))
           }
         }
 
@@ -138,7 +138,7 @@ resource "azurerm_container_app" "app" {
   }
 
   dynamic "secret" {
-    for_each = { for k, v in var.omrs_configs : replace(k, "_", "-") => v }
+    for_each = { for k, v in var.omrs_configs : lower(replace(k, "_", "-")) => v }
     content {
       name  = secret.key
       value = secret.value
