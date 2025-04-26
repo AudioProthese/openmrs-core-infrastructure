@@ -58,10 +58,10 @@ resource "azurerm_container_app" "app" {
         memory = var.memory_backend
 
         dynamic "env" {
-          for_each = { for k, v in var.omrs_configs : k => replace(k, "_", "-") }
+          for_each = var.omrs_configs
           content {
             name        = env.key
-            secret_name = env.value
+            secret_name = lower(replace(env.key, "_", "-"))
           }
         }
 
