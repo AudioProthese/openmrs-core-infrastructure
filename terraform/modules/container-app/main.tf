@@ -7,11 +7,14 @@ resource "azurerm_container_app_environment" "this" {
   logs_destination               = var.logs_destination
   log_analytics_workspace_id     = var.log_analytics_workspace_id
 
-  workload_profile {
-    name                  = var.workload_profile_name
-    workload_profile_type = var.workload_profile_type
-    minimum_count         = var.workload_profile_min_count
-    maximum_count         = var.workload_profile_max_count
+  dynamic "workload_profile" {
+    for_each = var.workload_profile_name != "" ? [1] : []
+    content {
+      name                  = var.workload_profile_name
+      workload_profile_type = var.workload_profile_type
+      minimum_count         = var.workload_profile_min_count
+      maximum_count         = var.workload_profile_max_count
+    }
   }
 
   tags = var.tags
