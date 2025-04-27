@@ -17,6 +17,13 @@ resource "azurerm_container_app_environment" "this" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      infrastructure_resource_group_name,
+      workload_profile
+    ]
+  }
+
   tags = var.tags
 }
 
