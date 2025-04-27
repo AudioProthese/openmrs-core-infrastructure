@@ -19,6 +19,14 @@ resource "azurerm_mssql_server" "this" {
   tags = var.tags
 }
 
+resource "azurerm_mssql_firewall_rule" "allow_azure_services" {
+  name             = "AllowAzureServices"
+  server_id        = azurerm_mssql_server.this.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
+
+
 resource "azurerm_mssql_database" "this" {
   name           = var.database_name
   server_id      = azurerm_mssql_server.this.id
