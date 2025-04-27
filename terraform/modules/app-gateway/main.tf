@@ -38,16 +38,12 @@ resource "azurerm_application_gateway" "this" {
       for addr in var.backend_addresses : addr.ip_address
       if can(addr.ip_address)
     ]
-    fqdns = [
-      for addr in var.backend_addresses : addr.fqdn
-      if can(addr.fqdn)
-    ]
   }
 
   backend_http_settings {
     name                  = var.http_setting_name
     cookie_based_affinity = "Disabled"
-    port                  = var.frontend_port
+    port                  = var.backend_port
     protocol              = "Http"
     request_timeout       = 60
   }

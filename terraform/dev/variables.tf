@@ -357,3 +357,7 @@ variable "environment_storage_access_mode" {
   description = "Access mode for the container app environment storage"
   type        = string
 }
+variable "app_gateway_backend_port" {
+  description = "Port to use for backend HTTP settings"
+  type        = number
+}

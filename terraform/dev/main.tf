@@ -107,10 +107,10 @@ module "monitoring_storage" {
   resource_group_name          = var.resource_group_name
   location                     = var.location
   tags                         = var.tags
-  log_analytics_workspace_name = "${var.project_name}-${var.environment}-logs"
+  log_analytics_workspace_name = format("%s%slogs", var.project_name, var.environment)
   log_analytics_sku            = "PerGB2018"
   log_retention_days           = 30
-  storage_account_name         = "${var.project_name}${var.environment}storage"
+  storage_account_name         = format("%s%sstorage", var.project_name, var.environment)
   storage_account_tier         = "Standard"
   storage_replication_type     = "LRS"
   openmrs_fileshare_name       = "openmrs-data"
@@ -245,10 +245,10 @@ module "app_gateway" {
   http_setting_name       = var.app_gateway_http_setting_name
   listener_name           = var.app_gateway_listener_name
   rule_name               = var.app_gateway_rule_name
+  backend_port            = var.app_gateway_backend_port
   backend_addresses = [
     {
       ip_address = module.container_app.internal_load_balancer_ip
-      fqdn       = ""
     }
   ]
 

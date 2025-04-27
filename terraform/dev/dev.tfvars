@@ -81,7 +81,7 @@ app_gateway_http_setting_name       = "httpSetting"
 app_gateway_listener_name           = "httpListener"
 app_gateway_rule_name               = "rule"
 sku_capacity                        = 2
-
+app_gateway_backend_port            = 8080
 
 # --- Azure Container App (module azure-container-app) ---
 enable_frontend       = true

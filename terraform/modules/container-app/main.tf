@@ -48,6 +48,24 @@ resource "azurerm_container_app" "app" {
     max_replicas = var.max_replicas
 
     dynamic "container" {
+      for_each = var.enable_gateway ? [1] : []
+      content {
+        name   = "gateway"
+        image  = var.container_image_gateway
+        cpu    = var.cpu_gateway
+        memory = var.memory_gateway
+
+        dynamic "env" {
+          for_each = var.gateway_env_vars
+          content {
+            name  = env.key
+            value = env.value
+          }
+        }
+      }
+    }
+
+    dynamic "container" {
       for_each = var.enable_frontend ? [1] : []
       content {
         name   = "frontend"
@@ -86,24 +104,6 @@ resource "azurerm_container_app" "app" {
           content {
             name = "openmrs-data"
             path = var.backend_volume_path
-          }
-        }
-      }
-    }
-
-    dynamic "container" {
-      for_each = var.enable_gateway ? [1] : []
-      content {
-        name   = "gateway"
-        image  = var.container_image_gateway
-        cpu    = var.cpu_gateway
-        memory = var.memory_gateway
-
-        dynamic "env" {
-          for_each = var.gateway_env_vars
-          content {
-            name  = env.key
-            value = env.value
           }
         }
       }
