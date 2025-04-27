@@ -107,7 +107,7 @@ resource "azurerm_container_app" "app" {
       content {
         name         = "openmrs-data"
         storage_type = var.storage_type
-        storage_name = var.storage_account_name
+        storage_name = azurerm_container_app_environment_storage.this.name
       }
     }
   }
