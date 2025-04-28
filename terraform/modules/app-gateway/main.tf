@@ -13,13 +13,14 @@ resource "azurerm_application_gateway" "this" {
 
 
   probe {
-    name                                      = "probe-gateway"
-    protocol                                  = "Http"
-    path                                      = "/openmrs/spa/"
-    interval                                  = 30
-    timeout                                   = 30
-    unhealthy_threshold                       = 3
-    pick_host_name_from_backend_http_settings = true
+    name                = "probe-gateway"
+    protocol            = "Http"
+    path                = "/openmrs/spa/"
+    interval            = 30
+    timeout             = 30
+    unhealthy_threshold = 3
+    host                = "127.0.0.1"
+
     match {
       status_code = ["200-399"]
     }
