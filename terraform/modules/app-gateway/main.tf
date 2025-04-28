@@ -11,6 +11,20 @@ resource "azurerm_application_gateway" "this" {
   resource_group_name = var.resource_group_name
   location            = var.location
 
+
+  probe {
+    name                                      = "probe-gateway"
+    protocol                                  = "Http"
+    path                                      = "/openmrs/spa/"
+    interval                                  = 30
+    timeout                                   = 30
+    unhealthy_threshold                       = 3
+    pick_host_name_from_backend_http_settings = true
+    match {
+      status_code = ["200-399"]
+    }
+  }
+
   sku {
     name     = var.sku_name
     tier     = var.sku_tier
@@ -45,6 +59,7 @@ resource "azurerm_application_gateway" "this" {
     cookie_based_affinity = "Disabled"
     port                  = var.backend_port
     protocol              = "Http"
+    probe_name            = "probe-gateway"
     request_timeout       = 60
   }
 
