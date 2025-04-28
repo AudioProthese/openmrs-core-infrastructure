@@ -54,7 +54,7 @@ resource "azurerm_application_gateway" "this" {
     name                = "health-probe"
     protocol            = "Http"
     host                = var.test
-    path                = "/healthz"
+    path                = "/"
     interval            = 30
     timeout             = 30
     unhealthy_threshold = 3
