@@ -41,11 +41,24 @@ resource "azurerm_application_gateway" "this" {
   }
 
   backend_http_settings {
-    name                  = var.http_setting_name
-    cookie_based_affinity = "Disabled"
-    port                  = var.backend_port
-    protocol              = "Http"
-    request_timeout       = 60
+    name                                = var.http_setting_name
+    cookie_based_affinity               = "Disabled"
+    port                                = var.backend_port
+    protocol                            = "Http"
+    request_timeout                     = 60
+    pick_host_name_from_backend_address = true
+    probe_name                          = "health-probe"
+  }
+
+  probe {
+    name                = "health-probe"
+    protocol            = "Http"
+    host                = var.test
+    path                = "/healthz"
+    interval            = 30
+    timeout             = 30
+    unhealthy_threshold = 3
+    port                = 80
   }
 
   http_listener {
@@ -66,3 +79,4 @@ resource "azurerm_application_gateway" "this" {
 
   tags = var.tags
 }
+

@@ -237,6 +237,7 @@ module "app_gateway" {
   listener_name           = var.app_gateway_listener_name
   rule_name               = var.app_gateway_rule_name
   backend_port            = var.app_gateway_backend_port
+  test                    = module.container_app.container_app_fqdn
   backend_addresses = [
     {
       ip_address = module.container_app.internal_load_balancer_ip
