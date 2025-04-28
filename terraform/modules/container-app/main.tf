@@ -122,9 +122,10 @@ resource "azurerm_container_app" "app" {
   dynamic "ingress" {
     for_each = var.enable_ingress ? [1] : []
     content {
-      external_enabled = var.ingress_external_enabled
-      target_port      = var.target_port
-      transport        = var.ingress_transport
+      external_enabled           = var.ingress_external_enabled
+      target_port                = var.target_port
+      transport                  = var.ingress_transport
+      allow_insecure_connections = var.allow_insecure_connections
 
       dynamic "traffic_weight" {
         for_each = var.traffic_weights

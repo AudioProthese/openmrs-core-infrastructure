@@ -243,3 +243,8 @@ variable "openmrs_fileshare_name" {
   type        = string
 
 }
+
+variable "allow_insecure_connections" {
+  description = "Allow insecure connections for the gateway"
+  type        = bool
+}

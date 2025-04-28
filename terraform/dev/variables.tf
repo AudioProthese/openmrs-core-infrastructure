@@ -102,78 +102,37 @@ variable "nsg_rules" {
   default = {}
 }
 
-## --------------- SQL DATABASE ----------------- ##
-
-variable "db_admin_login" {
-  description = "Login administrateur SQL"
-  type        = string
-}
-
-variable "db_public_network_access_enabled" {
-  description = "Autoriser l'accès public au serveur SQL"
-  type        = bool
-}
-
-variable "db_minimum_tls_version" {
-  description = "Version TLS minimale pour le serveur SQL"
-  type        = string
-}
-
-variable "db_outbound_network_restriction_enabled" {
-  description = "Restreindre le trafic sortant du serveur SQL"
-  type        = bool
-}
-
-variable "db_identity_type" {
-  description = "Type d'identité Managed Identity pour le serveur SQL"
-  type        = string
-}
-
-variable "db_identity_ids" {
-  description = "The list of identity IDs to assign to the database."
-  type        = list(string)
-}
 
 ## ------------------ Database variables ------------------ ##
 
 variable "database_name" {
-  description = "The name of the MS SQL Database"
+  description = "Name of the database for OpenMRS"
   type        = string
 }
 
-variable "db_collation" {
-  description = "The collation for the database"
+variable "db_admin_login" {
+  description = "Administrator username for MySQL"
   type        = string
 }
 
-variable "db_license_type" {
-  description = "Specifies the license type applied to this database"
+variable "db_backup_retention_days" {
+  description = "Number of days to retain backups"
+  type        = number
+}
+
+variable "db_sku_name" {
+  description = "SKU name for MySQL Flexible Server (e.g., B_Standard_B1ms)"
   type        = string
 }
 
 variable "db_max_size_gb" {
-  description = "The max size of the database in gigabytes"
+  description = "Maximum storage size in GB for MySQL server"
   type        = number
 }
 
-variable "db_read_scale_enabled" {
-  description = "If enabled, connections that have application intent set to readonly in their connection string may be routed to a readonly secondary replica"
-  type        = bool
-}
-
-variable "db_sku_name" {
-  description = "Specifies the name of the SKU used by the database"
+variable "public_network_access_db" {
+  description = "Autoriser l'accès public au serveur MySQL"
   type        = string
-}
-
-variable "db_zone_redundant" {
-  description = "Whether or not this database is zone redundant"
-  type        = bool
-}
-
-variable "db_backup_retention_days" {
-  description = "Point In Time Restore backup retention days"
-  type        = number
 }
 
 
@@ -238,7 +197,6 @@ variable "sku_capacity" {
   description = "Nombre d'instances de l'App Gateway"
   type        = number
 }
-
 
 
 ## -------- AZURE CONTAINER --------- APPS
@@ -346,6 +304,12 @@ variable "container_apps" {
     memory   = string
     env_vars = map(string)
   }))
+}
+
+
+variable "allow_insecure_connections" {
+  description = "Allow insecure connections for the gateway"
+  type        = bool
 }
 
 variable "environment_storage_name" {

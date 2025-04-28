@@ -60,28 +60,18 @@ module "dns_zone" {
 
 # 3. Base SQL (dépend de la Key Vault pour le mot de passe stocké)
 module "db" {
-  source                               = "../modules/db"
-  depends_on                           = [module.keyvault]
-  resource_group_name                  = var.resource_group_name
-  location                             = var.location
-  server_name                          = format("%s-%s-sql", var.project_name, var.environment)
-  administrator_login                  = var.db_admin_login
-  administrator_login_password         = data.azurerm_key_vault_secret.db_admin_password.value
-  public_network_access_enabled        = var.db_public_network_access_enabled
-  minimum_tls_version                  = var.db_minimum_tls_version
-  outbound_network_restriction_enabled = var.db_outbound_network_restriction_enabled
-  identity_type                        = var.db_identity_type
-  identity_ids                         = var.db_identity_ids
-  tags                                 = var.tags
-
-  database_name         = var.database_name
-  collation             = var.db_collation
-  license_type          = var.db_license_type
-  max_size_gb           = var.db_max_size_gb
-  read_scale_enabled    = var.db_read_scale_enabled
-  sku_name              = var.db_sku_name
-  zone_redundant        = var.db_zone_redundant
-  backup_retention_days = var.db_backup_retention_days
+  source                       = "../modules/db"
+  server_name                  = format("%s-%s-mysql", var.project_name, var.environment)
+  resource_group_name          = var.resource_group_name
+  location                     = var.location
+  database_name                = var.database_name
+  administrator_login          = var.db_admin_login
+  administrator_login_password = data.azurerm_key_vault_secret.db_admin_password.value
+  backup_retention_days        = var.db_backup_retention_days
+  public_network_access_db     = var.public_network_access_db
+  sku_name                     = var.db_sku_name
+  max_size_gb                  = var.db_max_size_gb
+  tags                         = var.tags
 }
 
 # 4. Injection des secrets dans Vault (après DB)
@@ -225,6 +215,7 @@ module "container_app" {
   user_assigned_identity_ids = [module.container_uai.identity_id]
   registry_server            = module.acr.acr_login_server
   registry_identity_id       = module.container_uai.identity_id
+  allow_insecure_connections = var.allow_insecure_connections
 }
 # 7. Application Gateway (reverse-proxy sur le Container App)
 module "app_gateway" {

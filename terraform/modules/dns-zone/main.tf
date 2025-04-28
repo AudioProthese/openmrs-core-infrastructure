@@ -11,5 +11,5 @@ resource "azurerm_dns_a_record" "a_records" {
   resource_group_name = var.resource_group_name
   ttl                 = each.value.ttl
   records             = each.value.records
-  tags = var.tags
+  tags                = var.tags
 }
