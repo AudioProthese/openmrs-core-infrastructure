@@ -134,7 +134,7 @@ environment_storage_name        = "openrms-storage"
 internal_load_balancer_enabled = true
 enable_ingress                 = true
 ingress_external_enabled       = false
-target_port                    = 8080
+target_port                    = 80
 ingress_transport              = "http"
 traffic_weights = [
   {
