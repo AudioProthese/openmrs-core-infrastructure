@@ -46,7 +46,8 @@ resource "azurerm_application_gateway" "this" {
     port                                = var.backend_port
     protocol                            = "Http"
     request_timeout                     = 60
-    pick_host_name_from_backend_address = true
+    host_name                           = var.test
+    pick_host_name_from_backend_address = false
     probe_name                          = "health-probe"
   }
 

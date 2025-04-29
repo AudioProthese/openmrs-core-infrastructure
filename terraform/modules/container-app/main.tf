@@ -50,7 +50,7 @@ resource "azurerm_container_app" "app" {
     dynamic "container" {
       for_each = var.enable_gateway ? [1] : []
       content {
-        name   = "gateway"
+        name   = var.gateway_container_name
         image  = var.container_image_gateway
         cpu    = var.cpu_gateway
         memory = var.memory_gateway
@@ -62,13 +62,14 @@ resource "azurerm_container_app" "app" {
             value = env.value
           }
         }
+
       }
     }
 
     dynamic "container" {
       for_each = var.enable_frontend ? [1] : []
       content {
-        name   = "frontend"
+        name   = var.frontend_container_name
         image  = var.container_image_frontend
         cpu    = var.cpu_frontend
         memory = var.memory_frontend
@@ -86,7 +87,7 @@ resource "azurerm_container_app" "app" {
     dynamic "container" {
       for_each = var.enable_backend ? [1] : []
       content {
-        name   = "backend"
+        name   = var.backend_container_name
         image  = var.container_image_backend
         cpu    = var.cpu_backend
         memory = var.memory_backend

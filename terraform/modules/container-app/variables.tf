@@ -248,3 +248,18 @@ variable "allow_insecure_connections" {
   description = "Allow insecure connections for the gateway"
   type        = bool
 }
+
+variable "gateway_container_name" {
+  description = "Name of the gateway container"
+  type        = string
+}
+
+variable "frontend_container_name" {
+  description = "Name of the frontend container"
+  type        = string
+}
+
+variable "backend_container_name" {
+  description = "Name of the backend container"
+  type        = string
+}

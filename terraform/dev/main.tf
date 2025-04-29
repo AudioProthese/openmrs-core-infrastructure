@@ -192,6 +192,10 @@ module "container_app" {
     OMRS_CONFIG_CONNECTION_PASSWORD  = data.azurerm_key_vault_secret.db_admin_password.value
   }
 
+  gateway_container_name  = "gateway"
+  frontend_container_name = "frontend"
+  backend_container_name  = "backend"
+
   # Backend volume configuration
   enable_backend_volume = var.enable_backend_volume
   backend_volume_path   = "/openmrs/data"
@@ -218,31 +222,31 @@ module "container_app" {
   allow_insecure_connections = var.allow_insecure_connections
 }
 # 7. Application Gateway (reverse-proxy sur le Container App)
-module "app_gateway" {
-  source                  = "../modules/app-gateway"
-  depends_on              = [module.container_app]
-  name                    = format("%s-%s-gw", var.project_name, var.environment)
-  resource_group_name     = var.resource_group_name
-  location                = var.location
-  subnet_id               = module.network.subnet_ids["appgw"]
-  sku_name                = var.app_gateway_sku_name
-  sku_tier                = var.app_gateway_sku_tier
-  sku_capacity            = var.app_gateway_sku_capacity
-  frontend_port           = var.app_gateway_frontend_port
-  gateway_ip_config_name  = var.app_gateway_gateway_ip_config_name
-  frontend_ip_config_name = var.app_gateway_frontend_ip_config_name
-  frontend_port_name      = var.app_gateway_frontend_port_name
-  backend_pool_name       = var.app_gateway_backend_pool_name
-  http_setting_name       = var.app_gateway_http_setting_name
-  listener_name           = var.app_gateway_listener_name
-  rule_name               = var.app_gateway_rule_name
-  backend_port            = var.app_gateway_backend_port
-  test                    = module.container_app.container_app_fqdn
-  backend_addresses = [
-    {
-      ip_address = module.container_app.internal_load_balancer_ip
-    }
-  ]
+# module "app_gateway" {
+#   source                  = "../modules/app-gateway"
+#   depends_on              = [module.container_app]
+#   name                    = format("%s-%s-gw", var.project_name, var.environment)
+#   resource_group_name     = var.resource_group_name
+#   location                = var.location
+#   subnet_id               = module.network.subnet_ids["appgw"]
+#   sku_name                = var.app_gateway_sku_name
+#   sku_tier                = var.app_gateway_sku_tier
+#   sku_capacity            = var.app_gateway_sku_capacity
+#   frontend_port           = var.app_gateway_frontend_port
+#   gateway_ip_config_name  = var.app_gateway_gateway_ip_config_name
+#   frontend_ip_config_name = var.app_gateway_frontend_ip_config_name
+#   frontend_port_name      = var.app_gateway_frontend_port_name
+#   backend_pool_name       = var.app_gateway_backend_pool_name
+#   http_setting_name       = var.app_gateway_http_setting_name
+#   listener_name           = var.app_gateway_listener_name
+#   rule_name               = var.app_gateway_rule_name
+#   backend_port            = var.app_gateway_backend_port
+#   test                    = module.container_app.container_app_fqdn
+#   backend_addresses = [
+#     {
+#       ip_address = module.container_app.internal_load_balancer_ip
+#     }
+#   ]
 
-  tags = var.tags
-}
+#   tags = var.tags
+# }

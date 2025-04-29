@@ -138,66 +138,70 @@ variable "public_network_access_db" {
 
 ## ------------- APP GATEWAY ---------------- ##
 
-variable "app_gateway_sku_name" {
-  description = "SKU name (Standard_v2, WAF_v2…)"
-  type        = string
-}
+# variable "app_gateway_sku_name" {
+#   description = "SKU name (Standard_v2, WAF_v2…)"
+#   type        = string
+# }
 
-variable "app_gateway_sku_tier" {
-  description = "SKU tier"
-  type        = string
-}
+# variable "app_gateway_sku_tier" {
+#   description = "SKU tier"
+#   type        = string
+# }
 
-variable "app_gateway_sku_capacity" {
-  description = "Nombre d'instances"
-  type        = number
-}
+# variable "app_gateway_sku_capacity" {
+#   description = "Nombre d'instances"
+#   type        = number
+# }
 
-variable "app_gateway_frontend_port" {
-  description = "Port HTTP exposé"
-  type        = number
-}
+# variable "app_gateway_frontend_port" {
+#   description = "Port HTTP exposé"
+#   type        = number
+# }
 
-variable "app_gateway_gateway_ip_config_name" {
-  description = "Nom de la config IP interne"
-  type        = string
-}
+# variable "app_gateway_gateway_ip_config_name" {
+#   description = "Nom de la config IP interne"
+#   type        = string
+# }
 
-variable "app_gateway_frontend_ip_config_name" {
-  description = "Nom de la config IP publique"
-  type        = string
-}
+# variable "app_gateway_frontend_ip_config_name" {
+#   description = "Nom de la config IP publique"
+#   type        = string
+# }
 
-variable "app_gateway_frontend_port_name" {
-  description = "Nom du port frontal de l'App Gateway"
-  type        = string
-}
+# variable "app_gateway_frontend_port_name" {
+#   description = "Nom du port frontal de l'App Gateway"
+#   type        = string
+# }
 
-variable "app_gateway_backend_pool_name" {
-  description = "Nom du pool d'adresses backend de l'App Gateway"
-  type        = string
-}
+# variable "app_gateway_backend_pool_name" {
+#   description = "Nom du pool d'adresses backend de l'App Gateway"
+#   type        = string
+# }
 
-variable "app_gateway_http_setting_name" {
-  description = "Nom du HTTP Setting de l'App Gateway"
-  type        = string
-}
+# variable "app_gateway_http_setting_name" {
+#   description = "Nom du HTTP Setting de l'App Gateway"
+#   type        = string
+# }
 
-variable "app_gateway_listener_name" {
-  description = "Nom du listener de l'App Gateway"
-  type        = string
-}
+# variable "app_gateway_listener_name" {
+#   description = "Nom du listener de l'App Gateway"
+#   type        = string
+# }
 
-variable "app_gateway_rule_name" {
-  description = "Nom de la règle de routage de l'App Gateway"
-  type        = string
-}
+# variable "app_gateway_rule_name" {
+#   description = "Nom de la règle de routage de l'App Gateway"
+#   type        = string
+# }
 
-variable "sku_capacity" {
-  description = "Nombre d'instances de l'App Gateway"
-  type        = number
-}
+# variable "app_gateway_backend_port" {
+#   description = "Port to use for backend HTTP settings"
+#   type        = number
+# }
 
+# variable "sku_capacity" {
+#   description = "Nombre d'instances de l'App Gateway"
+#   type        = number
+# }
 
 ## -------- AZURE CONTAINER --------- APPS
 
@@ -320,8 +324,4 @@ variable "environment_storage_name" {
 variable "environment_storage_access_mode" {
   description = "Access mode for the container app environment storage"
   type        = string
-}
-variable "app_gateway_backend_port" {
-  description = "Port to use for backend HTTP settings"
-  type        = number
 }
