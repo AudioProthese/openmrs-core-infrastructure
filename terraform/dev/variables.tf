@@ -270,11 +270,6 @@ variable "enable_gateway" {
   type        = bool
 }
 
-variable "enable_ingress" {
-  description = "Whether to enable ingress"
-  type        = bool
-}
-
 variable "ingress_external_enabled" {
   description = "Whether to enable external ingress"
   type        = bool

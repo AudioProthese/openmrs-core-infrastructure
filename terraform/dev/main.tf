@@ -209,7 +209,6 @@ module "container_app" {
   gateway_env_vars        = lookup(var.container_apps, "gateway").env_vars
 
   # Ingress configuration
-  enable_ingress           = var.enable_ingress
   ingress_external_enabled = var.ingress_external_enabled
   target_port              = var.target_port
   ingress_transport        = var.ingress_transport

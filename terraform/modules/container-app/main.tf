@@ -36,8 +36,10 @@ resource "azurerm_container_app_environment_storage" "this" {
   access_mode                  = var.environment_storage_access_mode
 }
 
-resource "azurerm_container_app" "app" {
-  name                         = var.container_app_name
+resource "azurerm_container_app" "gateway" {
+  count                        = var.enable_gateway ? 1 : 0
+  depends_on                   = [azurerm_container_app.frontend, azurerm_container_app.backend]
+  name                         = "${var.container_app_name}-gateway"
   resource_group_name          = var.resource_group_name
   container_app_environment_id = azurerm_container_app_environment.this.id
   revision_mode                = var.revision_mode
@@ -47,65 +49,140 @@ resource "azurerm_container_app" "app" {
     min_replicas = var.min_replicas
     max_replicas = var.max_replicas
 
-    dynamic "container" {
-      for_each = var.enable_gateway ? [1] : []
-      content {
-        name   = var.gateway_container_name
-        image  = var.container_image_gateway
-        cpu    = var.cpu_gateway
-        memory = var.memory_gateway
+    container {
+      name   = var.gateway_container_name
+      image  = var.container_image_gateway
+      cpu    = var.cpu_gateway
+      memory = var.memory_gateway
 
-        dynamic "env" {
-          for_each = var.gateway_env_vars
-          content {
-            name  = env.key
-            value = env.value
-          }
-        }
-
-      }
-    }
-
-    dynamic "container" {
-      for_each = var.enable_frontend ? [1] : []
-      content {
-        name   = var.frontend_container_name
-        image  = var.container_image_frontend
-        cpu    = var.cpu_frontend
-        memory = var.memory_frontend
-
-        dynamic "env" {
-          for_each = var.frontend_env_vars
-          content {
-            name  = env.key
-            value = env.value
-          }
+      dynamic "env" {
+        for_each = var.gateway_env_vars
+        content {
+          name  = env.key
+          value = env.value
         }
       }
     }
+  }
 
-    dynamic "container" {
-      for_each = var.enable_backend ? [1] : []
+  ingress {
+    external_enabled           = var.ingress_external_enabled
+    target_port                = var.target_port
+    transport                  = var.ingress_transport
+    allow_insecure_connections = var.allow_insecure_connections
+
+    dynamic "traffic_weight" {
+      for_each = var.traffic_weights
       content {
-        name   = var.backend_container_name
-        image  = var.container_image_backend
-        cpu    = var.cpu_backend
-        memory = var.memory_backend
+        latest_revision = traffic_weight.value.latest_revision
+        revision_suffix = lookup(traffic_weight.value, "revision_suffix", null)
+        percentage      = traffic_weight.value.percentage
+      }
+    }
+  }
 
-        dynamic "env" {
-          for_each = var.omrs_configs
-          content {
-            name        = env.key
-            secret_name = lower(replace(env.key, "_", "-"))
-          }
+  identity {
+    type         = "UserAssigned"
+    identity_ids = var.user_assigned_identity_ids
+  }
+
+  registry {
+    server   = var.registry_server
+    identity = var.registry_identity_id
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_container_app" "frontend" {
+  count                        = var.enable_frontend ? 1 : 0
+  depends_on                   = [azurerm_container_app.backend]
+  name                         = "${var.container_app_name}-frontend"
+  resource_group_name          = var.resource_group_name
+  container_app_environment_id = azurerm_container_app_environment.this.id
+  revision_mode                = var.revision_mode
+  workload_profile_name        = var.workload_profile_name != "" ? var.workload_profile_name : null
+
+  template {
+    min_replicas = var.min_replicas
+    max_replicas = var.max_replicas
+
+    container {
+      name   = var.frontend_container_name
+      image  = var.container_image_frontend
+      cpu    = var.cpu_frontend
+      memory = var.memory_frontend
+
+      dynamic "env" {
+        for_each = var.frontend_env_vars
+        content {
+          name  = env.key
+          value = env.value
         }
+      }
+    }
+  }
 
-        dynamic "volume_mounts" {
-          for_each = var.enable_backend_volume ? [1] : []
-          content {
-            name = "openmrs-data"
-            path = var.backend_volume_path
-          }
+  ingress {
+    external_enabled           = false
+    target_port                = 80
+    transport                  = var.ingress_transport
+    allow_insecure_connections = var.allow_insecure_connections
+
+    dynamic "traffic_weight" {
+      for_each = var.traffic_weights
+      content {
+        latest_revision = traffic_weight.value.latest_revision
+        revision_suffix = lookup(traffic_weight.value, "revision_suffix", null)
+        percentage      = traffic_weight.value.percentage
+      }
+    }
+  }
+
+  identity {
+    type         = "UserAssigned"
+    identity_ids = var.user_assigned_identity_ids
+  }
+
+  registry {
+    server   = var.registry_server
+    identity = var.registry_identity_id
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_container_app" "backend" {
+  count                        = var.enable_backend ? 1 : 0
+  name                         = "${var.container_app_name}-backend"
+  resource_group_name          = var.resource_group_name
+  container_app_environment_id = azurerm_container_app_environment.this.id
+  revision_mode                = var.revision_mode
+  workload_profile_name        = var.workload_profile_name != "" ? var.workload_profile_name : null
+
+  template {
+    min_replicas = var.min_replicas
+    max_replicas = var.max_replicas
+
+    container {
+      name   = var.backend_container_name
+      image  = var.container_image_backend
+      cpu    = var.cpu_backend
+      memory = var.memory_backend
+
+      dynamic "env" {
+        for_each = var.omrs_configs
+        content {
+          name        = env.key
+          secret_name = lower(replace(env.key, "_", "-"))
+        }
+      }
+
+      dynamic "volume_mounts" {
+        for_each = var.enable_backend_volume ? [1] : []
+        content {
+          name = "openmrs-data"
+          path = var.backend_volume_path
         }
       }
     }
@@ -120,39 +197,30 @@ resource "azurerm_container_app" "app" {
     }
   }
 
-  dynamic "ingress" {
-    for_each = var.enable_ingress ? [1] : []
-    content {
-      external_enabled           = var.ingress_external_enabled
-      target_port                = var.target_port
-      transport                  = var.ingress_transport
-      allow_insecure_connections = var.allow_insecure_connections
+  ingress {
+    external_enabled           = false
+    target_port                = 8080
+    transport                  = var.ingress_transport
+    allow_insecure_connections = var.allow_insecure_connections
 
-      dynamic "traffic_weight" {
-        for_each = var.traffic_weights
-        content {
-          latest_revision = traffic_weight.value.latest_revision
-          revision_suffix = lookup(traffic_weight.value, "revision_suffix", null)
-          percentage      = traffic_weight.value.percentage
-        }
+    dynamic "traffic_weight" {
+      for_each = var.traffic_weights
+      content {
+        latest_revision = traffic_weight.value.latest_revision
+        revision_suffix = lookup(traffic_weight.value, "revision_suffix", null)
+        percentage      = traffic_weight.value.percentage
       }
     }
   }
 
-  dynamic "identity" {
-    for_each = length(var.user_assigned_identity_ids) > 0 ? [1] : []
-    content {
-      type         = "UserAssigned"
-      identity_ids = var.user_assigned_identity_ids
-    }
+  identity {
+    type         = "UserAssigned"
+    identity_ids = var.user_assigned_identity_ids
   }
 
-  dynamic "registry" {
-    for_each = var.registry_server != "" ? [1] : []
-    content {
-      server   = var.registry_server
-      identity = var.registry_identity_id != "" ? var.registry_identity_id : null
-    }
+  registry {
+    server   = var.registry_server
+    identity = var.registry_identity_id
   }
 
   dynamic "secret" {

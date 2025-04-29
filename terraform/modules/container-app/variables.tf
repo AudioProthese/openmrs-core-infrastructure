@@ -153,10 +153,6 @@ variable "storage_account_name" {
 }
 
 # Ingress variables
-variable "enable_ingress" {
-  description = "Whether to enable ingress (provided by root module)"
-  type        = bool
-}
 
 variable "ingress_external_enabled" {
   description = "Whether to enable external ingress (provided by root module)"

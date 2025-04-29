@@ -122,7 +122,6 @@ environment_storage_name        = "openrms-storage"
 # Ingress configurations
 
 internal_load_balancer_enabled = false
-enable_ingress                 = true
 ingress_external_enabled       = true
 target_port                    = 80
 ingress_transport              = "http"
