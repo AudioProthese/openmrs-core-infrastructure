@@ -143,82 +143,102 @@ module "container_app" {
     module.monitoring_storage,
     module.container_uai,
   ]
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  tags                = var.tags
 
-  # Environment configuration
-  resource_group_name             = var.resource_group_name
-  location                        = var.location
-  container_app_environment_name  = format("%s-%s-env", var.project_name, var.environment)
-  container_app_name              = format("%s-%s-app", var.project_name, var.environment)
-  aca_subnet_id                   = module.network.subnet_ids["aca"]
-  internal_load_balancer_enabled  = var.internal_load_balancer_enabled
-  logs_destination                = var.logs_destination
-  log_analytics_workspace_id      = module.monitoring_storage.log_analytics_workspace_id
-  revision_mode                   = var.revision_mode
-  environment_storage_name        = var.environment_storage_name
-  environment_storage_access_mode = var.environment_storage_access_mode
-  storage_account_name            = module.monitoring_storage.storage_account_name
-  openmrs_fileshare_name          = module.monitoring_storage.openmrs_fileshare_name
-  primary_access_key              = module.monitoring_storage.primary_access_key
-
-  workload_profile_name      = var.workload_profile_name
-  workload_profile_type      = var.workload_profile_type
-  workload_profile_min_count = var.workload_profile_min_count
-  workload_profile_max_count = var.workload_profile_max_count
-  tags                       = var.tags
-
-  # Scaling configuration
-  min_replicas = var.min_replicas
-  max_replicas = var.max_replicas
-
-  # Frontend container configuration
-  enable_frontend          = var.enable_frontend
-  container_image_frontend = lookup(var.container_apps, "frontend").image
-  cpu_frontend             = lookup(var.container_apps, "frontend").cpu
-  memory_frontend          = lookup(var.container_apps, "frontend").memory
-  frontend_env_vars        = lookup(var.container_apps, "frontend").env_vars
-
-  # Backend container configuration
-  enable_backend          = var.enable_backend
-  container_image_backend = lookup(var.container_apps, "backend").image
-  cpu_backend             = lookup(var.container_apps, "backend").cpu
-  memory_backend          = lookup(var.container_apps, "backend").memory
-  omrs_configs = {
-    OMRS_CONFIG_MODULE_WEB_ADMIN     = "true"
-    OMRS_CONFIG_AUTO_UPDATE_DATABASE = "true"
-    OMRS_CONFIG_CREATE_TABLES        = "true"
-    OMRS_CONFIG_CONNECTION_SERVER    = module.db.server_fqdn
-    OMRS_CONFIG_CONNECTION_DATABASE  = module.db.database_name
-    OMRS_CONFIG_CONNECTION_USERNAME  = var.db_admin_login
-    OMRS_CONFIG_CONNECTION_PASSWORD  = data.azurerm_key_vault_secret.db_admin_password.value
+  environment = {
+    name                           = var.app_environment.name
+    subnet_id                      = module.network.subnet_ids["aca"]
+    internal_load_balancer_enabled = var.app_environment.internal_load_balancer_enabled
+    logs_destination               = var.app_environment.logs_destination
+    log_analytics_workspace_id     = module.monitoring_storage.log_analytics_workspace_id
+    workload_profile = {
+      name          = var.app_environment.workload_profile.name
+      type          = var.app_environment.workload_profile.type
+      minimum_count = var.app_environment.workload_profile.minimum_count
+      maximum_count = var.app_environment.workload_profile.maximum_count
+    }
   }
 
-  gateway_container_name  = "gateway"
-  frontend_container_name = "frontend"
-  backend_container_name  = "backend"
+  storage = {
+    name         = var.storage.name
+    account_name = module.monitoring_storage.storage_account_name
+    share_name   = module.monitoring_storage.openmrs_fileshare_name
+    access_key   = module.monitoring_storage.primary_access_key
+    access_mode  = var.storage.access_mode
+  }
 
-  # Backend volume configuration
-  enable_backend_volume = var.enable_backend_volume
-  backend_volume_path   = "/openmrs/data"
-  storage_type          = "AzureFile"
+  common_config = {
+    base_name                  = var.common_config.base_name
+    revision_mode              = var.common_config.revision_mode
+    min_replicas               = var.common_config.min_replicas
+    max_replicas               = var.common_config.max_replicas
+    ingress_transport          = var.common_config.ingress_transport
+    allow_insecure_connections = var.common_config.allow_insecure_connections
+    user_assigned_identity_ids = [module.container_uai.identity_id]
+    registry = {
+      server      = module.acr.acr_login_server
+      identity_id = module.container_uai.identity_id
+    }
+    traffic_weights = var.common_config.traffic_weights
+  }
 
-  # Gateway container configuration 
-  enable_gateway          = var.enable_gateway
-  container_image_gateway = lookup(var.container_apps, "gateway").image
-  cpu_gateway             = lookup(var.container_apps, "gateway").cpu
-  memory_gateway          = lookup(var.container_apps, "gateway").memory
-  gateway_env_vars        = lookup(var.container_apps, "gateway").env_vars
+  gateway = {
+    enabled        = var.gateway.enabled
+    name_suffix    = var.gateway.name_suffix
+    container_name = var.gateway.container_name
+    image          = var.gateway.image
+    cpu            = var.gateway.cpu
+    memory         = var.gateway.memory
+    env_vars       = var.gateway.env_vars
+    ingress = {
+      external_enabled = var.gateway.ingress.external_enabled
+      target_port      = var.gateway.ingress.target_port
+    }
+  }
 
-  # Ingress configuration
-  ingress_external_enabled = var.ingress_external_enabled
-  target_port              = var.target_port
-  ingress_transport        = var.ingress_transport
-  traffic_weights          = var.traffic_weights
+  frontend = {
+    enabled        = var.frontend.enabled
+    name_suffix    = var.frontend.name_suffix
+    container_name = var.frontend.container_name
+    image          = var.frontend.image
+    cpu            = var.frontend.cpu
+    memory         = var.frontend.memory
+    env_vars       = var.frontend.env_vars
+    ingress = {
+      external_enabled = var.frontend.ingress.external_enabled
+      target_port      = var.frontend.ingress.target_port
+    }
+  }
 
-  # Identity and registry configuration
-  user_assigned_identity_ids = [module.container_uai.identity_id]
-  registry_server            = module.acr.acr_login_server
-  registry_identity_id       = module.container_uai.identity_id
-  allow_insecure_connections = var.allow_insecure_connections
+  backend = {
+    enabled        = var.backend.enabled
+    name_suffix    = var.backend.name_suffix
+    container_name = var.backend.container_name
+    image          = var.backend.image
+    cpu            = var.backend.cpu
+    memory         = var.backend.memory
+    omrs_configs = {
+      OMRS_CONFIG_MODULE_WEB_ADMIN     = "true"
+      OMRS_CONFIG_AUTO_UPDATE_DATABASE = "true"
+      OMRS_CONFIG_CREATE_TABLES        = "true"
+      OMRS_CONFIG_CONNECTION_SERVER    = module.db.server_fqdn
+      OMRS_CONFIG_CONNECTION_DATABASE  = module.db.database_name
+      OMRS_CONFIG_CONNECTION_USERNAME  = var.db_admin_login
+      OMRS_CONFIG_CONNECTION_PASSWORD  = data.azurerm_key_vault_secret.db_admin_password.value
+    }
+    ingress = {
+      external_enabled = var.backend.ingress.external_enabled
+      target_port      = var.backend.ingress.target_port
+    }
+    volume = {
+      enabled      = var.backend.volume.enabled
+      name         = var.backend.volume.name
+      path         = var.backend.volume.path
+      storage_type = var.backend.volume.storage_type
+    }
+  }
 }
 # 7. Application Gateway (reverse-proxy sur le Container App)
 # module "app_gateway" {
