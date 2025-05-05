@@ -6,7 +6,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=4.25.0"
+      version = ">=4.25.0, <=4.27.0"
     }
 
     random = {
@@ -24,6 +24,7 @@ terraform {
 }
 
 provider "azurerm" {
+  subscription_id = "b33703ee-cc2d-4e8b-bd23-c259839be42e"
   features {}
 }
 provider "random" {

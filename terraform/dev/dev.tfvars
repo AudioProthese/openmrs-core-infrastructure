@@ -48,40 +48,30 @@ zone_name = "openrms.fchevalier.net"
 
 
 
-# --- Base SQL (module db) ---
-# Le mot de passe est lu depuis Key Vault dans le root module
-db_admin_login                          = "sqladmin" ## use by Azure container app
-db_public_network_access_enabled        = true
-db_minimum_tls_version                  = "1.2"
-db_outbound_network_restriction_enabled = false
-db_identity_type                        = "SystemAssigned"
-db_identity_ids                         = []
+# --- My SQL (module db) ---
 
 database_name            = "openrmsdb"
-db_collation             = "SQL_Latin1_General_CP1_CI_AS"
-db_license_type          = "LicenseIncluded"
-db_max_size_gb           = 2
-db_read_scale_enabled    = false
-db_sku_name              = "Basic"
-db_zone_redundant        = false
+db_admin_login           = "sqladmin"
 db_backup_retention_days = 7
-
+db_sku_name              = "B_Standard_B1ms"
+db_max_size_gb           = 20
+public_network_access_db = "Enabled"
 
 
 # --- Application Gateway (module app-gateway) ---
-app_gateway_sku_name                = "Standard_v2"
-app_gateway_sku_tier                = "Standard_v2"
-app_gateway_sku_capacity            = 2
-app_gateway_frontend_port           = 80
-app_gateway_gateway_ip_config_name  = "gatewayIpConfig"
-app_gateway_frontend_ip_config_name = "frontendIpConfig"
-app_gateway_frontend_port_name      = "frontendPort"
-app_gateway_backend_pool_name       = "backendPool"
-app_gateway_http_setting_name       = "httpSetting"
-app_gateway_listener_name           = "httpListener"
-app_gateway_rule_name               = "rule"
-sku_capacity                        = 2
-
+# app_gateway_sku_name                = "Standard_v2"
+# app_gateway_sku_tier                = "Standard_v2"
+# app_gateway_sku_capacity            = 2
+# app_gateway_frontend_port           = 80
+# app_gateway_gateway_ip_config_name  = "gatewayIpConfig"
+# app_gateway_frontend_ip_config_name = "frontendIpConfig"
+# app_gateway_frontend_port_name      = "frontendPort"
+# app_gateway_backend_pool_name       = "backendPool"
+# app_gateway_http_setting_name       = "httpSetting"
+# app_gateway_listener_name           = "httpListener"
+# app_gateway_rule_name               = "rule"
+# sku_capacity                        = 2
+# app_gateway_backend_port            = 80
 
 # --- Azure Container App (module azure-container-app) ---
 enable_frontend       = true
@@ -90,7 +80,7 @@ enable_gateway        = true
 enable_backend_volume = true
 container_apps = {
   frontend = {
-    name   = "frontend-app"
+    name   = "frontend"
     image  = "openrmscoredevacr.azurecr.io/openrmscore-frontend:latest"
     cpu    = 1
     memory = "2Gi"
@@ -102,14 +92,14 @@ container_apps = {
     }
   }
   backend = {
-    name     = "backend-app"
+    name     = "backend"
     image    = "openrmscoredevacr.azurecr.io/openrmscore-backend:latest"
     cpu      = 1
     memory   = "2Gi"
     env_vars = {}
   }
   gateway = {
-    name   = "gateway-app"
+    name   = "gateway"
     image  = "openrmscoredevacr.azurecr.io/openrmscore-gateway:latest"
     cpu    = 1
     memory = "2Gi"
@@ -131,11 +121,11 @@ environment_storage_access_mode = "ReadWrite"
 environment_storage_name        = "openrms-storage"
 # Ingress configurations
 
-internal_load_balancer_enabled = true
-enable_ingress                 = true
-ingress_external_enabled       = false
-target_port                    = 8080
+internal_load_balancer_enabled = false
+ingress_external_enabled       = true
+target_port                    = 80
 ingress_transport              = "http"
+allow_insecure_connections     = true
 traffic_weights = [
   {
     latest_revision = true

@@ -153,10 +153,6 @@ variable "storage_account_name" {
 }
 
 # Ingress variables
-variable "enable_ingress" {
-  description = "Whether to enable ingress (provided by root module)"
-  type        = bool
-}
 
 variable "ingress_external_enabled" {
   description = "Whether to enable external ingress (provided by root module)"
@@ -242,4 +238,24 @@ variable "openmrs_fileshare_name" {
   description = "Name of the OpenMRS file share"
   type        = string
 
+}
+
+variable "allow_insecure_connections" {
+  description = "Allow insecure connections for the gateway"
+  type        = bool
+}
+
+variable "gateway_container_name" {
+  description = "Name of the gateway container"
+  type        = string
+}
+
+variable "frontend_container_name" {
+  description = "Name of the frontend container"
+  type        = string
+}
+
+variable "backend_container_name" {
+  description = "Name of the backend container"
+  type        = string
 }

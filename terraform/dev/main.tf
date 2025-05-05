@@ -60,28 +60,18 @@ module "dns_zone" {
 
 # 3. Base SQL (dépend de la Key Vault pour le mot de passe stocké)
 module "db" {
-  source                               = "../modules/db"
-  depends_on                           = [module.keyvault]
-  resource_group_name                  = var.resource_group_name
-  location                             = var.location
-  server_name                          = format("%s-%s-sql", var.project_name, var.environment)
-  administrator_login                  = var.db_admin_login
-  administrator_login_password         = data.azurerm_key_vault_secret.db_admin_password.value
-  public_network_access_enabled        = var.db_public_network_access_enabled
-  minimum_tls_version                  = var.db_minimum_tls_version
-  outbound_network_restriction_enabled = var.db_outbound_network_restriction_enabled
-  identity_type                        = var.db_identity_type
-  identity_ids                         = var.db_identity_ids
-  tags                                 = var.tags
-
-  database_name         = var.database_name
-  collation             = var.db_collation
-  license_type          = var.db_license_type
-  max_size_gb           = var.db_max_size_gb
-  read_scale_enabled    = var.db_read_scale_enabled
-  sku_name              = var.db_sku_name
-  zone_redundant        = var.db_zone_redundant
-  backup_retention_days = var.db_backup_retention_days
+  source                       = "../modules/db"
+  server_name                  = format("%s-%s-mysql", var.project_name, var.environment)
+  resource_group_name          = var.resource_group_name
+  location                     = var.location
+  database_name                = var.database_name
+  administrator_login          = var.db_admin_login
+  administrator_login_password = data.azurerm_key_vault_secret.db_admin_password.value
+  backup_retention_days        = var.db_backup_retention_days
+  public_network_access_db     = var.public_network_access_db
+  sku_name                     = var.db_sku_name
+  max_size_gb                  = var.db_max_size_gb
+  tags                         = var.tags
 }
 
 # 4. Injection des secrets dans Vault (après DB)
@@ -107,10 +97,10 @@ module "monitoring_storage" {
   resource_group_name          = var.resource_group_name
   location                     = var.location
   tags                         = var.tags
-  log_analytics_workspace_name = "${var.project_name}-${var.environment}-logs"
+  log_analytics_workspace_name = format("%s%slogs", var.project_name, var.environment)
   log_analytics_sku            = "PerGB2018"
   log_retention_days           = 30
-  storage_account_name         = "${var.project_name}${var.environment}storage"
+  storage_account_name         = format("%s%sstorage", var.project_name, var.environment)
   storage_account_tier         = "Standard"
   storage_replication_type     = "LRS"
   openmrs_fileshare_name       = "openmrs-data"
@@ -202,6 +192,10 @@ module "container_app" {
     OMRS_CONFIG_CONNECTION_PASSWORD  = data.azurerm_key_vault_secret.db_admin_password.value
   }
 
+  gateway_container_name  = "gateway"
+  frontend_container_name = "frontend"
+  backend_container_name  = "backend"
+
   # Backend volume configuration
   enable_backend_volume = var.enable_backend_volume
   backend_volume_path   = "/openmrs/data"
@@ -215,7 +209,6 @@ module "container_app" {
   gateway_env_vars        = lookup(var.container_apps, "gateway").env_vars
 
   # Ingress configuration
-  enable_ingress           = var.enable_ingress
   ingress_external_enabled = var.ingress_external_enabled
   target_port              = var.target_port
   ingress_transport        = var.ingress_transport
@@ -225,32 +218,34 @@ module "container_app" {
   user_assigned_identity_ids = [module.container_uai.identity_id]
   registry_server            = module.acr.acr_login_server
   registry_identity_id       = module.container_uai.identity_id
+  allow_insecure_connections = var.allow_insecure_connections
 }
 # 7. Application Gateway (reverse-proxy sur le Container App)
-module "app_gateway" {
-  source                  = "../modules/app-gateway"
-  depends_on              = [module.container_app]
-  name                    = format("%s-%s-gw", var.project_name, var.environment)
-  resource_group_name     = var.resource_group_name
-  location                = var.location
-  subnet_id               = module.network.subnet_ids["appgw"]
-  sku_name                = var.app_gateway_sku_name
-  sku_tier                = var.app_gateway_sku_tier
-  sku_capacity            = var.app_gateway_sku_capacity
-  frontend_port           = var.app_gateway_frontend_port
-  gateway_ip_config_name  = var.app_gateway_gateway_ip_config_name
-  frontend_ip_config_name = var.app_gateway_frontend_ip_config_name
-  frontend_port_name      = var.app_gateway_frontend_port_name
-  backend_pool_name       = var.app_gateway_backend_pool_name
-  http_setting_name       = var.app_gateway_http_setting_name
-  listener_name           = var.app_gateway_listener_name
-  rule_name               = var.app_gateway_rule_name
-  backend_addresses = [
-    {
-      ip_address = module.container_app.internal_load_balancer_ip
-      fqdn       = ""
-    }
-  ]
+# module "app_gateway" {
+#   source                  = "../modules/app-gateway"
+#   depends_on              = [module.container_app]
+#   name                    = format("%s-%s-gw", var.project_name, var.environment)
+#   resource_group_name     = var.resource_group_name
+#   location                = var.location
+#   subnet_id               = module.network.subnet_ids["appgw"]
+#   sku_name                = var.app_gateway_sku_name
+#   sku_tier                = var.app_gateway_sku_tier
+#   sku_capacity            = var.app_gateway_sku_capacity
+#   frontend_port           = var.app_gateway_frontend_port
+#   gateway_ip_config_name  = var.app_gateway_gateway_ip_config_name
+#   frontend_ip_config_name = var.app_gateway_frontend_ip_config_name
+#   frontend_port_name      = var.app_gateway_frontend_port_name
+#   backend_pool_name       = var.app_gateway_backend_pool_name
+#   http_setting_name       = var.app_gateway_http_setting_name
+#   listener_name           = var.app_gateway_listener_name
+#   rule_name               = var.app_gateway_rule_name
+#   backend_port            = var.app_gateway_backend_port
+#   test                    = module.container_app.container_app_fqdn
+#   backend_addresses = [
+#     {
+#       ip_address = module.container_app.internal_load_balancer_ip
+#     }
+#   ]
 
-  tags = var.tags
-}
+#   tags = var.tags
+# }

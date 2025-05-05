@@ -38,18 +38,28 @@ resource "azurerm_application_gateway" "this" {
       for addr in var.backend_addresses : addr.ip_address
       if can(addr.ip_address)
     ]
-    fqdns = [
-      for addr in var.backend_addresses : addr.fqdn
-      if can(addr.fqdn)
-    ]
   }
 
   backend_http_settings {
-    name                  = var.http_setting_name
-    cookie_based_affinity = "Disabled"
-    port                  = var.frontend_port
-    protocol              = "Http"
-    request_timeout       = 60
+    name                                = var.http_setting_name
+    cookie_based_affinity               = "Disabled"
+    port                                = var.backend_port
+    protocol                            = "Http"
+    request_timeout                     = 60
+    host_name                           = var.test
+    pick_host_name_from_backend_address = false
+    probe_name                          = "health-probe"
+  }
+
+  probe {
+    name                = "health-probe"
+    protocol            = "Http"
+    host                = var.test
+    path                = "/"
+    interval            = 30
+    timeout             = 30
+    unhealthy_threshold = 3
+    port                = 80
   }
 
   http_listener {
@@ -61,6 +71,7 @@ resource "azurerm_application_gateway" "this" {
 
   request_routing_rule {
     name                       = var.rule_name
+    priority                   = 100
     rule_type                  = "Basic"
     http_listener_name         = var.listener_name
     backend_address_pool_name  = var.backend_pool_name
@@ -69,3 +80,4 @@ resource "azurerm_application_gateway" "this" {
 
   tags = var.tags
 }
+

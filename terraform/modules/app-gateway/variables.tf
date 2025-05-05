@@ -93,3 +93,14 @@ variable "tags" {
   description = "Map de tags à appliquer"
   type        = map(string)
 }
+
+variable "backend_port" {
+  description = "Port to use for backend HTTP settings"
+  type        = number
+}
+
+variable "test" {
+  description = "Host to use for health probe"
+  type        = string
+
+}
