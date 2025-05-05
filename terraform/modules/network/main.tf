@@ -44,7 +44,6 @@ resource "azurerm_network_security_group" "this" {
   resource_group_name = var.resource_group_name
   tags                = var.tags
 
-  # si des règles sont fournies pour ce subnet, on les applique, sinon règle par défaut AllowAllInbound
   dynamic "security_rule" {
     for_each = length(var.nsg_rules[each.key]) > 0 ? var.nsg_rules[each.key] : [
       {
