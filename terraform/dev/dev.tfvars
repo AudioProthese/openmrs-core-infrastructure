@@ -2,13 +2,13 @@
 
 # --- Génériques ---
 
-project_name        = "openrmscore"
+project_name        = "openmrscore"
 environment         = "dev"
 location            = "francecentral"
-resource_group_name = "rg-openrmscore-dev"
+resource_group_name = "rg-openmrscore-dev"
 
 tags = {
-  project     = "openrmscore"
+  project     = "openmrscore"
   environment = "dev"
 }
 
@@ -30,7 +30,7 @@ subnets = {
   # }
 }
 
-# --- ACR / Key Vault SKU ---
+# --- acr / Key Vault SKU ---
 sku               = "Basic"
 sku_name_keyvault = "standard"
 
@@ -44,11 +44,11 @@ admin_object_id               = "7039aa21-edae-48d2-932b-51c35303ff75"
 
 # --- DNS ZONE --- # 
 
-zone_name = "openrms.fchevalier.net"
+zone_name = "openmrs.fchevalier.net"
 
 # --- My SQL (module db) ---
 
-database_name            = "openrmsdb"
+database_name            = "openmrsdb"
 db_admin_login           = "sqladmin"
 db_backup_retention_days = 7
 db_sku_name              = "B_Standard_B1ms"
@@ -59,7 +59,7 @@ public_network_access_db = "Enabled"
 
 # Container App Environment configuration
 app_environment = {
-  name                           = "openrmscore-dev-env"
+  name                           = "openmrscore-dev-env"
   internal_load_balancer_enabled = false
   logs_destination               = "log-analytics"
   workload_profile = {
@@ -72,13 +72,13 @@ app_environment = {
 
 # Storage configuration for Container App Environment
 storage = {
-  name        = "openrms-storage"
+  name        = "openmrs-storage"
   access_mode = "ReadWrite"
 }
 
 # Common configuration for all container apps
 common_config = {
-  base_name                  = "openrmscore-dev-app"
+  base_name                  = "openmrscore-dev-app"
   revision_mode              = "Single"
   min_replicas               = 1
   max_replicas               = 5
@@ -97,12 +97,12 @@ gateway = {
   enabled        = true
   name_suffix    = "gateway"
   container_name = "gateway"
-  image          = "openrmscoredevacr.azurecr.io/openrmscore-gateway:latest"
+  image          = "openmrscoredevacr.azurecr.io/openmrscore-gateway:latest"
   cpu            = 1
   memory         = "2Gi"
   env_vars = {
-    FRONTEND_URL = "openrmscore-dev-app-frontend"
-    BACKEND_URL  = "openrmscore-dev-app-backend"
+    FRONTEND_URL = "openmrscore-dev-app-frontend"
+    BACKEND_URL  = "openmrscore-dev-app-backend"
   }
   ingress = {
     external_enabled = true
@@ -115,9 +115,9 @@ frontend = {
   enabled        = true
   name_suffix    = "frontend"
   container_name = "frontend"
-  image          = "openrmscoredevacr.azurecr.io/openrmscore-frontend:latest"
-  cpu            = 1
-  memory         = "2Gi"
+  image          = "openmrscoredevacr.azurecr.io/openmrscore-frontend:latest"
+  cpu            = 1.5
+  memory         = "3Gi"
   env_vars = {
     API_URL            = "/openmrs"
     SPA_PATH           = "/openmrs/spa"
@@ -125,7 +125,7 @@ frontend = {
     SPA_DEFAULT_LOCALE = ""
   }
   ingress = {
-    external_enabled = false
+    external_enabled = true
     target_port      = 80
   }
 }
@@ -135,11 +135,11 @@ backend = {
   enabled        = true
   name_suffix    = "backend"
   container_name = "backend"
-  image          = "openrmscoredevacr.azurecr.io/openrmscore-backend:latest"
-  cpu            = 1
-  memory         = "2Gi"
+  image          = "openmrscoredevacr.azurecr.io/openmrscore-backend:latest"
+  cpu            = 1.5
+  memory         = "3Gi"
   ingress = {
-    external_enabled = false
+    external_enabled = true
     target_port      = 8080
   }
   volume = {
