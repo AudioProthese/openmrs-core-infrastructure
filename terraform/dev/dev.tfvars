@@ -30,7 +30,7 @@ subnets = {
   # }
 }
 
-# --- acr / Key Vault SKU ---
+# --- ACR / Key Vault SKU ---
 sku               = "Basic"
 sku_name_keyvault = "standard"
 
@@ -116,16 +116,16 @@ frontend = {
   name_suffix    = "frontend"
   container_name = "frontend"
   image          = "openrmscoredevacr.azurecr.io/openrmscore-frontend:latest"
-  cpu            = 1.5
-  memory         = "3Gi"
+  cpu            = 1
+  memory         = "2Gi"
   env_vars = {
-    API_URL            = "/openrms"
-    SPA_PATH           = "/openrms/spa"
-    SPA_CONFIG_URLS    = "/openrms/spa/config-core_demo.json"
+    API_URL            = "/openmrs"
+    SPA_PATH           = "/openmrs/spa"
+    SPA_CONFIG_URLS    = "/openmrs/spa/config-core_demo.json"
     SPA_DEFAULT_LOCALE = ""
   }
   ingress = {
-    external_enabled = true
+    external_enabled = false
     target_port      = 80
   }
 }
@@ -136,16 +136,16 @@ backend = {
   name_suffix    = "backend"
   container_name = "backend"
   image          = "openrmscoredevacr.azurecr.io/openrmscore-backend:latest"
-  cpu            = 1.5
-  memory         = "3Gi"
+  cpu            = 1
+  memory         = "2Gi"
   ingress = {
-    external_enabled = true
+    external_enabled = false
     target_port      = 8080
   }
   volume = {
     enabled      = true
-    name         = "openrms-data"
-    path         = "/openrms/data"
+    name         = "openmrs-data"
+    path         = "/openmrs/data"
     storage_type = "AzureFile"
   }
 }
