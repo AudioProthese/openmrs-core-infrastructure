@@ -16,8 +16,8 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = "rg-openrmscore-dev"
-    storage_account_name = "openrmscoredevsa01"
+    resource_group_name  = "rg-openmrscore-dev"
+    storage_account_name = "openmrscoredevsa01"
     container_name       = "tfstate-dev"
     key                  = "terraform.tfstate"
   }
