@@ -104,7 +104,7 @@ variable "nsg_rules" {
 ## ------------------ Database variables ------------------ ##
 
 variable "database_name" {
-  description = "Name of the database for OpenMRS"
+  description = "Name of the database for openrms"
   type        = string
 }
 

@@ -18,9 +18,9 @@ resource "azurerm_storage_account" "storage" {
   tags                     = var.tags
 }
 
-# Partage de fichiers pour persister les données OpenMRS
-resource "azurerm_storage_share" "openmrs_data" {
-  name               = var.openmrs_fileshare_name
+# Partage de fichiers pour persister les données openrms
+resource "azurerm_storage_share" "openrms_data" {
+  name               = var.openrms_fileshare_name
   storage_account_id = azurerm_storage_account.storage.id
-  quota              = var.openmrs_fileshare_quota
+  quota              = var.openrms_fileshare_quota
 }

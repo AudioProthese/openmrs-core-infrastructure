@@ -14,7 +14,7 @@ variable "location" {
 }
 
 variable "database_name" {
-  description = "Nom de la base de données OpenMRS"
+  description = "Nom de la base de données openrms"
   type        = string
 }
 
