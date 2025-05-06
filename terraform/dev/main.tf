@@ -91,7 +91,7 @@ module "omrs_secrets" {
   }
 }
 
-# 5. Monitoring (workspace + storage pour logs et données OpenMRS)
+# 5. Monitoring (workspace + storage pour logs et données openrms)
 module "monitoring_storage" {
   source                       = "../modules/monitoring-storage"
   resource_group_name          = var.resource_group_name
@@ -103,8 +103,8 @@ module "monitoring_storage" {
   storage_account_name         = format("%s%sstorage", var.project_name, var.environment)
   storage_account_tier         = "Standard"
   storage_replication_type     = "LRS"
-  openmrs_fileshare_name       = "openmrs-data"
-  openmrs_fileshare_quota      = 10
+  openrms_fileshare_name       = "openrms-data"
+  openrms_fileshare_quota      = 10
 }
 
 module "container_uai" {
@@ -164,7 +164,7 @@ module "container_app" {
   storage = {
     name         = var.storage.name
     account_name = module.monitoring_storage.storage_account_name
-    share_name   = module.monitoring_storage.openmrs_fileshare_name
+    share_name   = module.monitoring_storage.openrms_fileshare_name
     access_key   = module.monitoring_storage.primary_access_key
     access_mode  = var.storage.access_mode
   }

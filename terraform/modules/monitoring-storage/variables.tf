@@ -47,12 +47,12 @@ variable "storage_replication_type" {
 }
 
 # Variables File Share
-variable "openmrs_fileshare_name" {
-  description = "Nom du partage de fichiers pour OpenMRS"
+variable "openrms_fileshare_name" {
+  description = "Nom du partage de fichiers pour openrms"
   type        = string
 }
 
-variable "openmrs_fileshare_quota" {
-  description = "Quota en GB pour le partage de fichiers OpenMRS"
+variable "openrms_fileshare_quota" {
+  description = "Quota en GB pour le partage de fichiers openrms"
   type        = number
 }

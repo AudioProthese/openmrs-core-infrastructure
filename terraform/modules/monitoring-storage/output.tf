@@ -24,7 +24,7 @@ output "primary_access_key" {
   sensitive   = true
 }
 
-output "openmrs_fileshare_name" {
-  description = "Nom du partage de fichiers pour OpenMRS"
-  value       = azurerm_storage_share.openmrs_data.name
+output "openrms_fileshare_name" {
+  description = "Nom du partage de fichiers pour openrms"
+  value       = azurerm_storage_share.openrms_data.name
 }
