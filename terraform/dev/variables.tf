@@ -1,16 +1,20 @@
-# variables.tf
-# Description: Define the variables used in the project
-# Author: Fab
+##########################
+# Variables
+##########################
 
-/* General variables */
-
-variable "prj" {
+variable "project" {
   description = "The name of the project"
   type        = string
-  default     = "openmrs-core-infrastructure"
+  default     = "openmrs"
 }
 
-variable "org" {
+variable "env" {
+  description = "The environment in which the resources will be created"
+  type        = string
+  default     = "dev"
+}
+
+variable "organization" {
   description = "The name of the organization"
   type        = string
   default     = "sdv"
@@ -20,11 +24,4 @@ variable "location" {
   description = "The region in which the resources will be created"
   type        = string
   default     = "France Central"
-}
-
-/* DNS variables */
-variable "dns_zone_name" {
-  description = "The name of the DNS zone"
-  type        = string
-  default     = "openmrs.fchevalier.net"
 }

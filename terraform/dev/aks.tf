@@ -1,20 +1,21 @@
-# main.tf
-# Description: Main Tofu configuration file
-# Author: Fab
+##########################
+# Resource Group
+##########################
 
 resource "azurerm_resource_group" "aks" {
-  name     = var.prj
+  name     = var.project
   location = var.location
 }
 
+##########################
+# AKS
+##########################
+
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = join("-", [var.prj, var.org, "aks"])
+  name                = join("-", [var.project, var.env, var.organization, "aks"])
   location            = azurerm_resource_group.aks.location
   resource_group_name = azurerm_resource_group.aks.name
-  dns_prefix          = join("-", [var.prj, var.org, "dns", "aks"])
-
-  oidc_issuer_enabled       = true
-  workload_identity_enabled = true
+  dns_prefix          = join("-", [var.project, var.env, var.organization, "dns", "aks"])
 
   default_node_pool {
     name       = "default"
@@ -27,12 +28,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   web_app_routing {
-    dns_zone_ids = [azurerm_dns_zone.sdv-ocf-poc.id]
+    dns_zone_ids = []
   }
-}
 
-resource "azurerm_role_assignment" "aks-dns-role-by-id" {
-  scope                = azurerm_dns_zone.sdv-ocf-poc.id
-  role_definition_name = "DNS Zone Contributor"
-  principal_id         = azurerm_kubernetes_cluster.aks.web_app_routing[0].web_app_routing_identity[0].object_id
+  tags = {
+    Environment  = var.env
+    project      = var.project
+    organization = var.organization
+  }
 }

@@ -1,0 +1,33 @@
+# Global settings
+global:
+  defaultStorageClass: "default"
+
+# OpenMRS Backend settings
+openmrs-backend:
+  image:
+    tag: "qa"
+
+# OpenMRS Frontend settings
+openmrs-frontend:
+  image:
+    tag: "qa"
+
+# OpenMRS Gateway settings
+openmrs-gateway:
+  image:
+    tag: "qa"
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  ingress:
+    enabled: true
+    className: "webapprouting.kubernetes.azure.com"
+    annotations: {}
+    rules:
+      - http:
+          paths:
+            - path: /
+              pathType: Prefix
+    tls: []
