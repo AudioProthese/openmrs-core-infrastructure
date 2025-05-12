@@ -9,3 +9,11 @@ ingress:
   extraPaths: []
   tls: []
   ingressClassName: "webapprouting.kubernetes.azure.com"
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-server.monitoring.svc.cluster.local
