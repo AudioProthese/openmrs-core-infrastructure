@@ -28,7 +28,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   web_app_routing {
-    dns_zone_ids = []
+    dns_zone_ids = [
+      azurerm_dns_zone.openmrs-fchevalier.id,
+    ]
   }
 
   tags = {
