@@ -1,17 +1,27 @@
 #########################
-# Role Assignments
+# Role Assignments 
 #########################
 
+# Vault AKS User
 resource "azurerm_role_assignment" "keyvault_secrets_user" {
   scope                = azurerm_key_vault.vault.id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
 }
 
+# ACR AKS Pull
+resource "azurerm_role_assignment" "acr_pull" {
+  principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+  role_definition_name             = "AcrPull"
+  scope                            = azurerm_container_registry.acr.id
+  skip_service_principal_aad_check = true
+}
+
 ###############################
 # Federated Identity Credential
 ###############################
 
+# OIDC AKS
 resource "azurerm_federated_identity_credential" "identity" {
   name                = "kubelet-federated-identity"
   resource_group_name = azurerm_kubernetes_cluster.aks.node_resource_group
