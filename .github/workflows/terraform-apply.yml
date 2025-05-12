@@ -38,4 +38,3 @@ jobs:
         uses: dflook/terraform-apply@v1.48.0
         with:
           path: terraform/${{ inputs.environment }}/
-          var_file: terraform/${{ inputs.environment }}/${{ inputs.environment }}.tfvars
