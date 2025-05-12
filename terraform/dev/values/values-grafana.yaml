@@ -40,6 +40,6 @@ dashboards:
       revision: 1
       datasource: Prometheus
     prometheus-overview:
-      gnetId: 3362
+      gnetId: 3662
       revision: 2
       datasource: Prometheus
