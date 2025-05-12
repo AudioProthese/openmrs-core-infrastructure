@@ -7,6 +7,6 @@ server:
     path: /
     pathType: Prefix
     hosts:
-      - prometheus.audioprothese.duckdns.org
+      - prometheus.audioprothese.fchevalier.net
   extraPaths: []
   tls: []

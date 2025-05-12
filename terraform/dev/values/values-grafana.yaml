@@ -5,7 +5,7 @@ ingress:
   path: /
   pathType: Prefix
   hosts:
-    - grafana.audioprothese.duckdns.org
+    - grafana.audioprothese.fchevalier.net
   extraPaths: []
   tls: []
   ingressClassName: "webapprouting.kubernetes.azure.com"
