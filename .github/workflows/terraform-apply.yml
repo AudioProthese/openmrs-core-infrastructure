@@ -6,7 +6,6 @@ on:
       environment:
         type: string
 
-
 permissions:
   contents: read
   pull-requests: write

@@ -17,7 +17,7 @@ variable "env" {
 variable "organization" {
   description = "The name of the organization"
   type        = string
-  default     = "sdv"
+  default     = "audioprothese"
 }
 
 variable "location" {

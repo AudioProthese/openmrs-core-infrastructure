@@ -8,6 +8,24 @@
 
 *This Git repository contains the source code to set up and manage AudioProthese+ infrastructure using Terraform.*
 
+## AZ CLI to create a Service Principal with Federated Credential
+
+- [docs](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-azure)
+
+```bash
+az ad app create --display-name "gh-terraform-sp"
+az ad app list --display-name "gh-terraform-sp" --query "[0].{appId:appId, objectId:id}" -o json
+az ad sp create --id <app_id>
+
+az role assignment create \
+  --assignee <app_id> \
+  --role "Contributor" \
+  --scope /subscriptions/c2b90606-cc96-463f-aa06-70f32719fe4f
+
+az ad app federated-credential create --id <app_id> --parameters @federated-credential.json
+```
+
+
 ## AZ CLI to init backend & tf service principal
 
 - [docs](https://learn.microsoft.com/fr-fr/azure/developer/terraform/store-state-in-azure-storage?tabs=azure-cli)
@@ -18,8 +36,6 @@
 RESOURCE_GROUP_NAME=tfstate
 STORAGE_ACCOUNT_NAME=tfstate$RANDOM
 CONTAINER_NAME=tfstate
-SP_NAME=terraform-sp
-SUBSCRIPTION_ID=
 
 # Create resource group
 az group create --name $RESOURCE_GROUP_NAME --location francecentral
@@ -29,18 +45,14 @@ az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_
 
 # Create blob container
 az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
-
-# Create terraform service principal
-az ad sp create-for-rbac --name $SP_NAME --role Owner --scopes /subscriptions/$SUBSCRIPTION_ID
 ```
 
 ## CI/CD Variables
 
 ```bash
-ARM_CLIENT_ID
-ARM_CLIENT_SECRET
-ARM_SUBSCRIPTION_ID
-ARM_TENANT_ID
+AZURE_CLIENT_ID
+AZURE_TENANT_ID
+AZURE_SUBSCRIPTION_ID
 ```
 
 ## Helm charts
