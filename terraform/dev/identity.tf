@@ -2,9 +2,9 @@
 # Role Assignments
 #########################
 
-resource "azurerm_role_assignment" "keyvault_user" {
+resource "azurerm_role_assignment" "keyvault_secrets_user" {
   scope                = azurerm_key_vault.vault.id
-  role_definition_name = "Key Vault User"
+  role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
 }
 
