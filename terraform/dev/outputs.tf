@@ -1,3 +1,3 @@
-output "azure-nameservers" {
-  value = azurerm_dns_zone.openmrs-fchevalier.name_servers
+output "web-app-rooting" {
+  value = azurerm_kubernetes_cluster.aks.web_app_routing
 }
