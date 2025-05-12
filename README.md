@@ -29,6 +29,15 @@ az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_
 az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
 ```
 
+## CI/CD Variables
+
+```bash
+ARM_CLIENT_ID
+ARM_CLIENT_SECRET
+ARM_SUBSCRIPTION_ID
+ARM_TENANT_ID
+```
+
 ## Helm charts
 
 - [OpenMRS](https://github.com/openmrs/openmrs-contrib-cluster)
