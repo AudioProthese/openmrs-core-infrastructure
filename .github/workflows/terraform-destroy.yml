@@ -1,16 +1,11 @@
-name: Create Terraform plan
+name: Destroy Terraform resources
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       environment:
         description: "The environment to destroy (dev, prod)"
         required: true
-        type: string
-      iac_path:
-        description: "Set the relative path of the IaC configuration"
-        required: false
-        default: "terraform/"
         type: string
 
 permissions:
@@ -19,22 +14,8 @@ permissions:
   id-token: write
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: terraform-fmt-check
-        uses: dflook/terraform-fmt-check@v1.48.0
-        with:
-          path: ${{ inputs.iac_path }}${{ inputs.environment }}
-
-  plan:
-    name: Plan
-    needs:
-      - lint
+  destroy:
+    name: Destroy
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     env:
@@ -45,8 +26,7 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Configure Azure Credentials
         uses: azure/login@v2
@@ -55,7 +35,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Plan Terraform
-        uses: dflook/terraform-plan@v1.48.0
+      - name: Destroy resources
+        uses: dflook/terraform-destroy@v1.48.0
         with:
-          path: ${{ inputs.iac_path }}${{ inputs.environment }}/
+          path: terraform/${{ inputs.environment }}/

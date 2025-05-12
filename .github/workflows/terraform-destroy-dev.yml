@@ -1,0 +1,16 @@
+name: Destroy Terraform resources (DEV)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  destroy:
+    uses: ./.github/workflows/terraform-destroy.yml
+    with:
+      environment: dev
+    secrets: inherit
