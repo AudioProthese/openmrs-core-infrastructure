@@ -1,20 +1,11 @@
 ##########################
-# Resource Group
-##########################
-
-resource "azurerm_resource_group" "aks" {
-  name     = var.project
-  location = var.location
-}
-
-##########################
 # AKS
 ##########################
 
 resource "azurerm_kubernetes_cluster" "aks" {
   name                      = join("-", [var.project, var.env, var.organization, "aks"])
-  location                  = azurerm_resource_group.aks.location
-  resource_group_name       = azurerm_resource_group.aks.name
+  location                  = azurerm_resource_group.rg.location
+  resource_group_name       = azurerm_resource_group.rg.name
   dns_prefix                = join("-", [var.project, var.env, var.organization, "dns", "aks"])
   oidc_issuer_enabled       = true
   workload_identity_enabled = true
