@@ -3,7 +3,7 @@
 #########################
 
 resource "azurerm_key_vault" "vault" {
-  name                        = join("-", [var.project, var.env, var.organization, "vault"])
+  name                        = join("-", [var.project, var.env, "vault"])
   location                    = var.location
   resource_group_name         = azurerm_resource_group.aks.name
   enabled_for_disk_encryption = true
