@@ -13,13 +13,13 @@ openmrs-backend:
 openmrs-frontend:
   image:
     tag: "latest"
-    repository: "openmrsdevacr.azurecr.io/openmrscore-backend"
+    repository: "openmrsdevacr.azurecr.io/openmrscore-frontend"
 
 # OpenMRS Gateway settings
 openmrs-gateway:
   image:
     tag: "latest"
-    repository: "openmrsdevacr.azurecr.io/openmrscore-backend"
+    repository: "openmrsdevacr.azurecr.io/openmrscore-gateway"
 
   service:
     type: ClusterIP
