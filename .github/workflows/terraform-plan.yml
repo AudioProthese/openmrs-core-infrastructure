@@ -57,4 +57,3 @@ jobs:
         uses: dflook/terraform-plan@v1.48.0
         with:
           path: ${{ inputs.iac_path }}${{ inputs.environment }}/
-          var_file: ${{ inputs.iac_path }}${{ inputs.environment }}/${{ inputs.environment }}.tfvars

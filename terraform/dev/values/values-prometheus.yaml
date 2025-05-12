@@ -1,0 +1,12 @@
+server:
+  ingress:
+    enabled: true
+    ingressClassName: "webapprouting.kubernetes.azure.com"
+    annotations: {}
+    labels: {}
+    path: /
+    pathType: Prefix
+    hosts:
+      - prometheus.audioprothese.duckdns.org
+  extraPaths: []
+  tls: []
