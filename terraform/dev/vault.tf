@@ -12,7 +12,4 @@ resource "azurerm_key_vault" "vault" {
   purge_protection_enabled    = false
   sku_name                    = "standard"
   enable_rbac_authorization   = true
-  lifecycle {
-    prevent_destroy = true
-  }
 }
