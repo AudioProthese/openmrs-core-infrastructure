@@ -29,6 +29,12 @@ az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_
 az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
 ```
 
+## Create SP for terraform
+
+```bash
+az ad sp create-for-rbac --name terraform-spn --role Contributor --scopes /subscriptions/<3132d17f-xxx–xxx-9e3b-403e8b08ed50>
+```
+
 ## CI/CD Variables
 
 ```bash
