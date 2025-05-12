@@ -1,7 +1,7 @@
 name: Destroy Terraform resources
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       environment:
         description: "The environment to destroy (dev, prod)"
