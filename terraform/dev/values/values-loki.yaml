@@ -32,12 +32,7 @@ minio:
 deploymentMode: SingleBinary
 
 singleBinary:
-  replicas: 3
-  persistence:
-    storageClass: default
-    accessModes:
-      - ReadWriteOnce
-    size: 30Gi
+  replicas: 1
 
 backend:
   replicas: 0
