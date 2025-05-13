@@ -4,7 +4,7 @@
 
 resource "azurerm_kubernetes_cluster" "aks" {
   name                      = join("-", [var.project, var.env, var.organization, "aks"])
-  location                  = azurerm_resource_group.rg.location
+  location                  = var.location
   resource_group_name       = var.resource_group
   dns_prefix                = join("-", [var.project, var.env, var.organization, "dns", "aks"])
   oidc_issuer_enabled       = true
