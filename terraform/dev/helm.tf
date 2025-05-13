@@ -54,7 +54,7 @@ resource "helm_release" "grafana" {
 ##########################
 
 resource "helm_release" "loki" {
-  depends_on       = [azurerm_kubernetes_cluster.aks]
+  depends_on       = [azurerm_kubernetes_cluster.aks, azurerm_storage_container.loki-admin, azurerm_storage_container.loki-chunks, azurerm_storage_container.loki-ruler]
   name             = "loki"
   namespace        = "loki"
   repository       = "https://grafana.github.io/helm-charts"
