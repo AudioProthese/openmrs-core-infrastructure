@@ -49,9 +49,12 @@ loki:
       accountName: "openmrscoredevsa02"
       useFederatedToken: true # Use federated token for authentication
 
-# Define the service account
 serviceAccount:
-  create: false
+  name: loki
+  annotations:
+    "azure.workload.identity/client-id": "d6de217f-32de-4118-b479-9c958a3e40c4" # The app ID of the Azure AD app
+  labels:
+    "azure.workload.identity/use": "true"
 
 deploymentMode: Distributed
 
