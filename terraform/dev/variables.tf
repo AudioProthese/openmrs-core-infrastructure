@@ -25,3 +25,10 @@ variable "location" {
   type        = string
   default     = "France Central"
 }
+
+variable "resource_group" {
+  description = "The name of the resource group"
+  type        = string
+  default     = "rg-openmrscore-dev"
+
+}
