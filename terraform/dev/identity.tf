@@ -17,16 +17,34 @@ resource "azurerm_role_assignment" "acr_pull" {
   skip_service_principal_aad_check = true
 }
 
+# Loki AKS
+resource "azurerm_role_assignment" "loki" {
+  principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+  role_definition_name             = "Storage Blob Data Contributor"
+  scope                            = azurerm_storage_account.openmrscoredevsa02.id
+  skip_service_principal_aad_check = true
+}
+
 ###############################
 # Federated Identity Credential
 ###############################
 
 # OIDC AKS
-resource "azurerm_federated_identity_credential" "identity" {
-  name                = "kubelet-federated-identity"
+resource "azurerm_federated_identity_credential" "ESOFederatedIdentity" {
+  name                = "ESOFederatedIdentity"
   resource_group_name = azurerm_kubernetes_cluster.aks.node_resource_group
   audience            = ["api://AzureADTokenExchange"]
   issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url
   parent_id           = azurerm_kubernetes_cluster.aks.kubelet_identity[0].user_assigned_identity_id
   subject             = "system:serviceaccount:default:workload-identity-sa"
+}
+
+# OIDC Loki
+resource "azurerm_federated_identity_credential" "LokiFederatedIdentity" {
+  name                = "LokiFederatedIdentity"
+  resource_group_name = azurerm_kubernetes_cluster.aks.node_resource_group
+  audience            = ["api://AzureADTokenExchange"]
+  issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url
+  parent_id           = azurerm_kubernetes_cluster.aks.kubelet_identity[0].user_assigned_identity_id
+  subject             = "system:serviceaccount:loki:loki"
 }

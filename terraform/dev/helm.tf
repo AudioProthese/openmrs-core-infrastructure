@@ -48,3 +48,20 @@ resource "helm_release" "grafana" {
     "${file("./values/values-grafana.yaml")}"
   ]
 }
+
+##########################
+# Loki Helm Chart
+##########################
+
+resource "helm_release" "loki" {
+  depends_on       = [azurerm_kubernetes_cluster.aks]
+  name             = "loki"
+  namespace        = "loki"
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "loki"
+  create_namespace = true
+  version          = "6.29.0"
+  values = [
+    "${file("./values/values-loki.yaml")}"
+  ]
+}
