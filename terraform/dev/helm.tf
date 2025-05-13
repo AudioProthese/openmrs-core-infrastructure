@@ -24,9 +24,9 @@ resource "helm_release" "prometheus" {
   name             = "prometheus"
   namespace        = "monitoring"
   repository       = "https://prometheus-community.github.io/helm-charts"
-  chart            = "prometheus"
+  chart            = "kube-prometheus-stack"
   create_namespace = true
-  version          = "27.13.0"
+  version          = "72.3.1"
   values = [
     "${file("./values/prometheus-values.yaml")}"
   ]

@@ -1,5 +1,5 @@
 ---
-server:
+prometheus:
   ingress:
     enabled: true
     ingressClassName: "webapprouting.kubernetes.azure.com"
