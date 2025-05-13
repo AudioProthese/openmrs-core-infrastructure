@@ -20,14 +20,20 @@ resource "azurerm_storage_account" "openmrscoredevsa02" {
 # Container Storage 
 ##########################
 
-resource "azurerm_storage_container" "chunks" {
-  name                  = "chunks"
+resource "azurerm_storage_container" "loki-chunks" {
+  name                  = "loki-chunks"
   storage_account_id    = azurerm_storage_account.openmrscoredevsa02.id
   container_access_type = "private"
 }
 
-resource "azurerm_storage_container" "ruler" {
-  name                  = "ruler"
+resource "azurerm_storage_container" "loki-ruler" {
+  name                  = "loki-ruler"
+  storage_account_id    = azurerm_storage_account.openmrscoredevsa02.id
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "loki-admin" {
+  name                  = "loki-admin"
   storage_account_id    = azurerm_storage_account.openmrscoredevsa02.id
   container_access_type = "private"
 }
