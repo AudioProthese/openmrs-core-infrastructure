@@ -11,7 +11,7 @@ resource "helm_release" "openmrs" {
   create_namespace = true
   version          = "0.1.5"
   values = [
-    "${file("./values/values-openmrs.yaml")}"
+    "${file("./values/openmrs-values.yaml")}"
   ]
 }
 
@@ -28,7 +28,7 @@ resource "helm_release" "prometheus" {
   create_namespace = true
   version          = "27.13.0"
   values = [
-    "${file("./values/values-prometheus.yaml")}"
+    "${file("./values/prometheus-values.yaml")}"
   ]
 }
 
@@ -45,7 +45,7 @@ resource "helm_release" "grafana" {
   create_namespace = true
   version          = "9.0.0"
   values = [
-    "${file("./values/values-grafana.yaml")}"
+    "${file("./values/grafana-values.yaml")}"
   ]
 }
 
@@ -54,7 +54,7 @@ resource "helm_release" "grafana" {
 ##########################
 
 resource "helm_release" "loki" {
-  depends_on       = [azurerm_kubernetes_cluster.aks, azurerm_storage_container.loki-admin, azurerm_storage_container.loki-chunks, azurerm_storage_container.loki-ruler]
+  depends_on       = [azurerm_kubernetes_cluster.aks]
   name             = "loki"
   namespace        = "loki"
   repository       = "https://grafana.github.io/helm-charts"
@@ -62,6 +62,23 @@ resource "helm_release" "loki" {
   create_namespace = true
   version          = "6.29.0"
   values = [
-    "${file("./values/values-loki.yaml")}"
+    "${file("./values/loki-values.yaml")}"
+  ]
+}
+
+##########################
+# Alloy Helm Chart
+##########################
+
+resource "helm_release" "alloy" {
+  depends_on       = [azurerm_kubernetes_cluster.aks]
+  name             = "alloy"
+  namespace        = "alloy"
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "alloy"
+  create_namespace = true
+  version          = "1.0.3"
+  values = [
+    "${file("./values/alloy-values.yaml")}"
   ]
 }
