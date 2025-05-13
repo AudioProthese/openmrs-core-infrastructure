@@ -17,6 +17,7 @@ loki:
     volume_enabled: true
   ruler:
     enable_api: true
+  auth_enabled: false
 
 minio:
   enabled: true
@@ -51,3 +52,9 @@ bloomCompactor:
   replicas: 0
 bloomGateway:
   replicas: 0
+
+resultsCache:
+  enabled: false
+
+chunksCache:
+  enabled: false
