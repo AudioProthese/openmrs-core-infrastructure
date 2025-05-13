@@ -8,6 +8,14 @@
 
 *This Git repository contains the source code to set up and manage AudioProthese+ infrastructure using Terraform.*
 
+## Prérequis
+
+- App + service principale pour terraform
+- Configuration OIDC
+- Création storage account and blob storage for tf state
+- Création registry
+
+
 ## Helm charts
 
 - [OpenMRS](https://github.com/openmrs/openmrs-contrib-cluster)
