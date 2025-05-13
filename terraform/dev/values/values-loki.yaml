@@ -1,33 +1,25 @@
 loki:
-  podLabels:
-    "azure.workload.identity/use": "true"
+  commonConfig:
+    replication_factor: 1
   schemaConfig:
     configs:
       - from: "2024-04-01"
         store: tsdb
-        object_store: azure
+        object_store: s3
         schema: v13
         index:
           prefix: loki_index_
           period: 24h
-  ingester:
-    chunk_encoding: snappy
-
-  storage:
-    type: azure
-    azure:
-      accountName: "openmrscoredevsa02"
-      accountKey:
-      useManagedIdentity: true
-      useFederatedToken: true
-      userAssignedId: "d6de217f-32de-4118-b479-9c958a3e40c4"
-    bucketNames:
-      chunks: "loki-chunks"
-      ruler: "loki-ruler"
-      admin: "loki-admin"
+  pattern_ingester:
+    enabled: true
+  limits_config:
+    allow_structured_metadata: true
+    volume_enabled: true
+  ruler:
+    enable_api: true
 
 minio:
-  enabled: false
+  enabled: true
 
 deploymentMode: SingleBinary
 
