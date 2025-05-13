@@ -30,7 +30,7 @@ resource "azurerm_role_assignment" "loki" {
 ###############################
 
 # OIDC AKS
-resource "azurerm_federated_identity_credential" "identity" {
+resource "azurerm_federated_identity_credential" "ESOFederatedIdentity" {
   name                = "ESOFederatedIdentity"
   resource_group_name = azurerm_kubernetes_cluster.aks.node_resource_group
   audience            = ["api://AzureADTokenExchange"]
@@ -40,7 +40,7 @@ resource "azurerm_federated_identity_credential" "identity" {
 }
 
 # OIDC Loki
-resource "azurerm_federated_identity_credential" "identity" {
+resource "azurerm_federated_identity_credential" "LokiFederatedIdentity" {
   name                = "LokiFederatedIdentity"
   resource_group_name = azurerm_kubernetes_cluster.aks.node_resource_group
   audience            = ["api://AzureADTokenExchange"]
