@@ -34,7 +34,7 @@ deploymentMode: SingleBinary
 singleBinary:
   replicas: 3
   persistence:
-    storageClass: gp2
+    storageClass: default
     accessModes:
       - ReadWriteOnce
     size: 30Gi
