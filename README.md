@@ -72,21 +72,28 @@ AZURE_SUBSCRIPTION_ID
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: le-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   name: openmrs-gateway-ingress
-  namespace: openmrs  # Namespace for your openmrs app
+  namespace: openmrs
 spec:
-  ingressClassName: webapprouting.kubernetes.azure.com  # Azure-specific ingress class
+  ingressClassName: webapprouting.kubernetes.azure.com
   rules:
-    - host: openmrs.audioprothese.duckdns.org  # Replace with your domain
+    - host: openmrs.dev.audioprothese.toxma.fr
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: gateway  # The service name of your openmrs gateway
+                name: gateway
                 port:
-                  number: 80   # Port where your service is exposed
+                  number: 80
+  tls: []
+    - secretName: openmrs-tls
+      hosts:
+        - openmrs.dev.audioprothese.toxma.fr
 ```
 
 ```bash

@@ -3,28 +3,38 @@ prometheus:
   ingress:
     enabled: true
     ingressClassName: "webapprouting.kubernetes.azure.com"
-    annotations: {}
+    annotations:
+      cert-manager.io/cluster-issuer: le-prod
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     labels: {}
     path: /
     pathType: Prefix
     hosts:
-      - prometheus.dev.audioprothese.duckdns.org
-  extraPaths: []
-  tls: []
+      - prometheus.dev.audioprothese.toxma.fr
+    extraPaths: []
+    tls:
+      - hosts:
+          - prometheus.dev.audioprothese.toxma.fr
+        secretName: prometheus-tls
 
 grafana:
   adminUser: admin
   adminPassword: password
   ingress:
     enabled: true
-    annotations: {}
+    annotations:
+      cert-manager.io/cluster-issuer: le-prod
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     labels: {}
     path: /
     pathType: Prefix
     hosts:
-      - grafana.dev.audioprothese.duckdns.org
+      - grafana.dev.audioprothese.toxma.fr
     extraPaths: []
-    tls: []
+    tls:
+      - hosts:
+          - grafana.dev.audioprothese.toxma.fr
+        secretName: grafana-tls
     ingressClassName: "webapprouting.kubernetes.azure.com"
   datasources:
     datasources.yaml:
