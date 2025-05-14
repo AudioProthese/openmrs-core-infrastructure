@@ -142,12 +142,17 @@ alloy:
 ingress:
   enabled: true
   ingressClassName: "webapprouting.kubernetes.azure.com"
-  annotations: {}
+  annotations:
+    cert-manager.io/cluster-issuer: le-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   labels: {}
   path: /
   pathType: Prefix
   hosts:
-    - alloy.dev.audioprothese.duckdns.org
+    - alloy.dev.audioprothese.toxma.fr
   faroPort: 12345
-extraPaths: []
-tls: []
+  extraPaths: []
+  tls:
+    - hosts:
+        - alloy.dev.audioprothese.toxma.fr
+      secretName: alloy-tls
