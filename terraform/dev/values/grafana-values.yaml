@@ -11,6 +11,11 @@ ingress:
   tls: []
   ingressClassName: "webapprouting.kubernetes.azure.com"
 
+grafana.ini:
+  auth:
+    disable_login: true
+    disable_login_form: true
+
 datasources:
   datasources.yaml:
     apiVersion: 1
