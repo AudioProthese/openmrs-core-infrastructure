@@ -147,7 +147,7 @@ ingress:
   path: /
   pathType: Prefix
   hosts:
-    - alloy.audioprothese.duckdns.org
+    - alloy.dev.audioprothese.duckdns.org
   faroPort: 12345
 extraPaths: []
 tls: []

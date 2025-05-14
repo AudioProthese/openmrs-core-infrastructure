@@ -8,7 +8,7 @@ prometheus:
     path: /
     pathType: Prefix
     hosts:
-      - prometheus.audioprothese.duckdns.org
+      - prometheus.dev.audioprothese.duckdns.org
   extraPaths: []
   tls: []
 
@@ -22,7 +22,7 @@ grafana:
     path: /
     pathType: Prefix
     hosts:
-      - grafana.audioprothese.duckdns.org
+      - grafana.dev.audioprothese.duckdns.org
     extraPaths: []
     tls: []
     ingressClassName: "webapprouting.kubernetes.azure.com"
