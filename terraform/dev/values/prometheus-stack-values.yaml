@@ -1,0 +1,35 @@
+---
+prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: "webapprouting.kubernetes.azure.com"
+    annotations: {}
+    labels: {}
+    path: /
+    pathType: Prefix
+    hosts:
+      - prometheus.dev.audioprothese.duckdns.org
+  extraPaths: []
+  tls: []
+
+grafana:
+  adminUser: admin
+  adminPassword: password
+  ingress:
+    enabled: true
+    annotations: {}
+    labels: {}
+    path: /
+    pathType: Prefix
+    hosts:
+      - grafana.dev.audioprothese.duckdns.org
+    extraPaths: []
+    tls: []
+    ingressClassName: "webapprouting.kubernetes.azure.com"
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Loki
+          type: loki
+          url: http://loki-gateway.loki.svc.cluster.local/
