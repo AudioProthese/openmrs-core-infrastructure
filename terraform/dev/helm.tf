@@ -86,10 +86,10 @@ resource "helm_release" "cert_manager" {
 }
 
 #############################
-# DuckDNS Webhook Helm Chart
+# OVH Webhook Helm Chart
 #############################
 
-resource "helm_release" "duckdns_webhook" {
+resource "helm_release" "OVH_webhook" {
   depends_on       = [azurerm_kubernetes_cluster.aks, helm_release.cert_manager]
   name             = "cm-webhook-ovh"
   namespace        = "cert-manager"
