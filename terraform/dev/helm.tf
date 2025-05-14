@@ -19,33 +19,16 @@ resource "helm_release" "openmrs" {
 # Prometheus Helm Chart
 ##########################
 
-resource "helm_release" "prometheus" {
+resource "helm_release" "prometheus-stack" {
   depends_on       = [azurerm_kubernetes_cluster.aks]
-  name             = "prometheus"
+  name             = "prometheus-stack"
   namespace        = "monitoring"
   repository       = "https://prometheus-community.github.io/helm-charts"
   chart            = "kube-prometheus-stack"
   create_namespace = true
   version          = "72.3.1"
   values = [
-    "${file("./values/prometheus-values.yaml")}"
-  ]
-}
-
-##########################
-# Grafana Helm Chart
-##########################
-
-resource "helm_release" "grafana" {
-  depends_on       = [azurerm_kubernetes_cluster.aks]
-  name             = "grafana"
-  namespace        = "monitoring"
-  repository       = "https://grafana.github.io/helm-charts"
-  chart            = "grafana"
-  create_namespace = true
-  version          = "9.0.0"
-  values = [
-    "${file("./values/grafana-values.yaml")}"
+    "${file("./values/prometheus-stack-values.yaml")}"
   ]
 }
 
