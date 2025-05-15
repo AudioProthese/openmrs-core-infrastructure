@@ -3,7 +3,6 @@
 ##########################
 
 resource "helm_release" "openmrs" {
-  provider         = helm.aks
   depends_on       = [azurerm_kubernetes_cluster.aks]
   name             = "openmrs"
   namespace        = "openmrs"
@@ -22,7 +21,6 @@ resource "helm_release" "openmrs" {
 ##########################
 
 resource "helm_release" "prometheus-stack" {
-  provider         = helm.aks
   depends_on       = [azurerm_kubernetes_cluster.aks]
   name             = "prometheus-stack"
   namespace        = "monitoring"
@@ -41,7 +39,6 @@ resource "helm_release" "prometheus-stack" {
 ##########################
 
 resource "helm_release" "loki" {
-  provider         = helm.aks
   depends_on       = [azurerm_kubernetes_cluster.aks]
   name             = "loki"
   namespace        = "loki"
@@ -60,7 +57,6 @@ resource "helm_release" "loki" {
 ##########################
 
 resource "helm_release" "alloy" {
-  provider         = helm.aks
   depends_on       = [azurerm_kubernetes_cluster.aks]
   name             = "alloy"
   namespace        = "alloy"
@@ -79,7 +75,6 @@ resource "helm_release" "alloy" {
 #############################
 
 resource "helm_release" "cert_manager" {
-  provider         = helm.aks
   depends_on       = [azurerm_kubernetes_cluster.aks]
   name             = "cert-manager"
   namespace        = "cert-manager"
