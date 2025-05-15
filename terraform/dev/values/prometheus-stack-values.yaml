@@ -43,3 +43,24 @@ grafana:
         - name: Loki
           type: loki
           url: http://loki-gateway.loki.svc.cluster.local/
+          
+  envFromSecret: grafana-azuread-secret
+
+  grafana.ini:
+    server:
+      root_url: "https://grafana.dev.audioprothese.ovh/"
+      domain: "grafana.dev.audioprothese.ovh"
+
+    auth:
+      disable_login_form: true
+
+    auth.generic_oauth:
+      enabled: true
+      name: AzureAD
+      client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
+      client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
+      scopes: "openid profile email offline_access"
+      auth_url:  "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/authorize"
+      token_url: "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/token"
+      api_url:   "https://graph.microsoft.com/v1.0/me"
+      allow_sign_up: true
