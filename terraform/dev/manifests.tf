@@ -1,4 +1,4 @@
-resource "kubectl_manifest" "sa" {
+resource "kubectl_manifest" "cluster_issuer" {
   depends_on = [helm_release.cert_manager]
   yaml_body  = <<YAML
 apiVersion: cert-manager.io/v1
@@ -16,7 +16,7 @@ spec:
       - dns01:
           azureDNS:
             managedIdentity:
-              clientID: ${azurerm_kubernetes_cluster.aks.web_app_routing[0].web_app_routing_identity[0].object_id}
+              clientID: ${azurerm_kubernetes_cluster.aks.kubelet_identity[0].client_id}
             subscriptionID: ${data.azurerm_client_config.current.subscription_id}
             resourceGroupName: ${var.resource_group}
             hostedZoneName: ${azurerm_dns_zone.audioprothese_ovh.name}

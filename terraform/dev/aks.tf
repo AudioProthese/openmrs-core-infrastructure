@@ -31,11 +31,3 @@ resource "azurerm_kubernetes_cluster" "aks" {
     organization = var.organization
   }
 }
-
-resource "azurerm_role_assignment" "aks-dns-role-by-id" {
-  depends_on                       = [azurerm_kubernetes_cluster.aks]
-  scope                            = azurerm_dns_zone.audioprothese_ovh.id
-  role_definition_name             = "DNS Zone Contributor"
-  principal_id                     = azurerm_kubernetes_cluster.aks.web_app_routing[0].web_app_routing_identity[0].object_id
-  skip_service_principal_aad_check = true
-}
