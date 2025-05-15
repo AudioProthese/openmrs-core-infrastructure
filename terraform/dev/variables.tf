@@ -30,5 +30,10 @@ variable "resource_group" {
   description = "The name of the resource group"
   type        = string
   default     = "rg-openmrscore-dev"
+}
 
+variable "dns_zone_name" {
+  description = "The name of the DNS zone"
+  type        = string
+  default     = "audioprothese.ovh"
 }

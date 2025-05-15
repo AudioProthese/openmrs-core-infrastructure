@@ -10,7 +10,6 @@ resource "helm_release" "openmrs" {
   chart            = "openmrs"
   create_namespace = true
   version          = "0.1.5"
-  upgrade_install  = true
   values = [
     "${file("./values/openmrs-values.yaml")}"
   ]
@@ -28,7 +27,6 @@ resource "helm_release" "prometheus-stack" {
   chart            = "kube-prometheus-stack"
   create_namespace = true
   version          = "72.3.1"
-  upgrade_install  = true
   values = [
     "${file("./values/prometheus-stack-values.yaml")}"
   ]
@@ -46,7 +44,6 @@ resource "helm_release" "loki" {
   chart            = "loki"
   create_namespace = true
   version          = "6.29.0"
-  upgrade_install  = true
   values = [
     "${file("./values/loki-values.yaml")}"
   ]
@@ -64,7 +61,6 @@ resource "helm_release" "alloy" {
   chart            = "alloy"
   create_namespace = true
   version          = "1.0.3"
-  upgrade_install  = true
   values = [
     "${file("./values/alloy-values.yaml")}"
   ]
@@ -82,23 +78,4 @@ resource "helm_release" "cert_manager" {
   chart            = "cert-manager"
   create_namespace = true
   version          = "v1.17.2"
-  upgrade_install  = true
-}
-
-#############################
-# OVH Webhook Helm Chart
-#############################
-
-resource "helm_release" "OVH_webhook" {
-  depends_on       = [azurerm_kubernetes_cluster.aks, helm_release.cert_manager]
-  name             = "cm-webhook-ovh"
-  namespace        = "cert-manager"
-  repository       = "https://aureq.github.io/cert-manager-webhook-ovh/"
-  chart            = "cert-manager-webhook-ovh"
-  create_namespace = true
-  version          = "0.7.3"
-  upgrade_install  = true
-  values = [
-    "${file("./values/cm-ovh-webhook-values.yml")}"
-  ]
 }

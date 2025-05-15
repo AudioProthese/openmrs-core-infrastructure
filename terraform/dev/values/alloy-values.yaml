@@ -149,10 +149,10 @@ ingress:
   path: /
   pathType: Prefix
   hosts:
-    - alloy.dev.audioprothese.toxma.fr
+    - alloy.dev.audioprothese.ovh
   faroPort: 12345
   extraPaths: []
   tls:
     - hosts:
-        - alloy.dev.audioprothese.toxma.fr
+        - alloy.dev.audioprothese.ovh
       secretName: alloy-tls

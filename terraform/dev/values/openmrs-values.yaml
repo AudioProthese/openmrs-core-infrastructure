@@ -24,14 +24,3 @@ openmrs-gateway:
   service:
     type: ClusterIP
     port: 80
-
-  ingress:
-    enabled: true
-    className: "webapprouting.kubernetes.azure.com"
-    annotations: {}
-    rules:
-      - http:
-          paths:
-            - path: /
-              pathType: Prefix
-    tls: []

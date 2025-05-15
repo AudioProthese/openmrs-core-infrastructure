@@ -10,11 +10,11 @@ prometheus:
     path: /
     pathType: Prefix
     hosts:
-      - prometheus.dev.audioprothese.toxma.fr
+      - prometheus.dev.audioprothese.ovh
     extraPaths: []
     tls:
       - hosts:
-          - prometheus.dev.audioprothese.toxma.fr
+          - prometheus.dev.audioprothese.ovh
         secretName: prometheus-tls
 
 grafana:
@@ -29,11 +29,11 @@ grafana:
     path: /
     pathType: Prefix
     hosts:
-      - grafana.dev.audioprothese.toxma.fr
+      - grafana.dev.audioprothese.ovh
     extraPaths: []
     tls:
       - hosts:
-          - grafana.dev.audioprothese.toxma.fr
+          - grafana.dev.audioprothese.ovh
         secretName: grafana-tls
     ingressClassName: "webapprouting.kubernetes.azure.com"
   datasources:
