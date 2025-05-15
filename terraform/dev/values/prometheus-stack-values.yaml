@@ -6,24 +6,11 @@ prometheus:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-
-      # nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
-      # nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$scheme://$host$request_uri"
-
     labels: {}
     path: /
     pathType: Prefix
     hosts:
       - prometheus.dev.audioprothese.ovh
-    extraPaths: []
-      # - path: /oauth2/
-      #   pathType: Prefix
-      #   backend:
-      #     service:
-      #       name: oauth2-proxy
-      #       namespace: authgate
-      #       port:
-      #         number: 4180
     tls:
       - hosts:
           - prometheus.dev.audioprothese.ovh
