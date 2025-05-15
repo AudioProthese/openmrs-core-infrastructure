@@ -3,7 +3,7 @@
 ##########################
 
 terraform {
-  required_version = "= 1.11.4"
+  required_version = "=1.11.4"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -15,7 +15,7 @@ terraform {
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = "1.14.0"
+      version = "1.19.0"
     }
   }
 
