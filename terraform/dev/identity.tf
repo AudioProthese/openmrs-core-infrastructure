@@ -18,11 +18,20 @@ resource "azurerm_role_assignment" "acr_pull" {
   skip_service_principal_aad_check = true
 }
 
+# AKS DNS Zone Contributor
 resource "azurerm_role_assignment" "aks_dns" {
   depends_on                       = [azurerm_kubernetes_cluster.aks]
   scope                            = azurerm_dns_zone.audioprothese_ovh.id
   role_definition_name             = "DNS Zone Contributor"
   principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+  skip_service_principal_aad_check = true
+}
+
+# AKS Web App Routing DNS Zone Contributor
+resource "azurerm_role_assignment" "external_dns" {
+  scope                            = azurerm_dns_zone.audioprothese_ovh.id
+  role_definition_name             = "DNS Zone Contributor"
+  principal_id                     = azurerm_kubernetes_cluster.aks.web_app_routing[0].web_app_routing_identity[0].object_id
   skip_service_principal_aad_check = true
 }
 
