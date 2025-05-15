@@ -1,0 +1,14 @@
+existingSecret: oauth2-proxy-secret   # contains client-id / client-secret / cookie-secret
+
+config:
+  provider: oidc
+  oidcIssuerUrl: "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/v2.0"  
+  emailDomains: ["audioprotheseplus.onmicrosoft.com"]            
+  cookieSecure: true           
+
+ingress:
+  enabled: false             
+
+service:
+  type: ClusterIP
+  port: 4180
