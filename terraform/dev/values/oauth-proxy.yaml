@@ -11,4 +11,4 @@ ingress:
 
 service:
   type: ClusterIP
-  port: 4180
+  portNumber: 4180
