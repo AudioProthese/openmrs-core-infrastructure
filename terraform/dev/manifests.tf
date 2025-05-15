@@ -18,7 +18,7 @@ spec:
             managedIdentity:
               clientID: ${azurerm_kubernetes_cluster.aks.kubelet_identity[0].client_id}
             subscriptionID: ${azurerm_subscription.subscription.subscription_id}
-            resourceGroupName: ${azurerm_resource_group.rg.name}
+            resourceGroupName: ${var.resource_group}
             hostedZoneName: ${azurerm_dns_zone.audioprothese_ovh.name}
             environment: AzurePublicCloud
 YAML
