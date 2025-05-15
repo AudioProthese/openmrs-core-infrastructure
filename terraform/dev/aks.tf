@@ -3,6 +3,7 @@
 ##########################
 
 resource "azurerm_kubernetes_cluster" "aks" {
+  depends_on                = [azurerm_dns_zone.audioprothese_ovh]
   name                      = join("-", [var.project, var.env, var.organization, "aks"])
   location                  = var.location
   resource_group_name       = var.resource_group
@@ -32,6 +33,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
 }
 
 resource "azurerm_role_assignment" "aks-dns-role-by-id" {
+  depends_on                       = [azurerm_kubernetes_cluster.aks]
   scope                            = azurerm_dns_zone.audioprothese_ovh.id
   role_definition_name             = "DNS Zone Contributor"
   principal_id                     = azurerm_kubernetes_cluster.aks.web_app_routing[0].web_app_routing_identity[0].object_id
