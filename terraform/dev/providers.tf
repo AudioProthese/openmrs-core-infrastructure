@@ -33,6 +33,7 @@ terraform {
 
 provider "azurerm" {
   features {}
+
 }
 
 provider "helm" {
