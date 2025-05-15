@@ -7,7 +7,19 @@ config:
   cookieSecure: true           
 
 ingress:
-  enabled: false             
+  enabled: true
+  ingressClassName: webapprouting.kubernetes.azure.com
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - prometheus.dev.audioprothese.ovh
+  path: /oauth2/               
+  pathType: Prefix
+  tls:
+    - secretName: prometheus-tls
+      hosts:
+        - prometheus.dev.audioprothese.ovh
 
 service:
   type: ClusterIP
