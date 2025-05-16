@@ -1,3 +1,7 @@
+#############################
+# Cert Manager ClusterIssuer
+#############################
+
 resource "kubectl_manifest" "cluster_issuer" {
   depends_on = [helm_release.cert_manager]
   yaml_body  = <<YAML
@@ -24,4 +28,70 @@ spec:
 YAML
 }
 
+#############################
+# ESO Service Account
+#############################
 
+resource "kubectl_manifest" "sa" {
+  depends_on = [helm_release.eso]
+  yaml_body  = <<YAML
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: "${azurerm_kubernetes_cluster.aks.kubelet_identity[0].client_id}"
+  name: workload-identity-sa
+  namespace: default
+YAML
+}
+
+##############################
+# ESO SecretStore
+##############################
+
+resource "kubectl_manifest" "secretstore" {
+  depends_on = [kubectl_manifest.sa]
+  yaml_body  = <<YAML
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: azure-secret-store
+spec:
+  provider:
+    azurekv:
+      authType: WorkloadIdentity
+      vaultUrl: ${azurerm_key_vault.vault.vault_uri}
+      tenantId: ${azurerm_key_vault.vault.tenant_id}
+      serviceAccountRef:
+        name: workload-identity-sa
+YAML
+}
+
+###############################
+# ESO ExternalSecret
+###############################
+
+resource "kubectl_manifest" "grafana_azuread_secret" {
+  depends_on = [kubectl_manifest.secretstore]
+  yaml_body  = <<YAML
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: grafana-azuread-secret
+spec:
+  refreshPolicy: Periodic
+  refreshInterval: 1h 
+  secretStoreRef:
+    name: azure-secret-store
+    kind: SecretStore
+  target:
+    name: grafana-azuread-secret
+  data:
+  - secretKey: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+    remoteRef:
+      key: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+  - secretKey: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+    remoteRef:
+      key: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+YAML
+}
