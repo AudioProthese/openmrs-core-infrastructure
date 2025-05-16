@@ -61,7 +61,8 @@ grafana:
       client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
       client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
       scopes: "openid profile email offline_access"
-      role_attribute_path: "'Admin'"
+      auto_assign_org: true
+      auto_assign_org_role: Admin
       auth_url:  "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/authorize"
       token_url: "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/token"
       api_url:   "https://graph.microsoft.com/v1.0/me"
