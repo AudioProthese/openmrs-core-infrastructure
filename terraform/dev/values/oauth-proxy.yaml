@@ -9,7 +9,7 @@ extraArgs:
   redirect-url: https://oauth.dev.audioprothese.ovh/oauth2/callback
   email-domain: audioprotheseplus.onmicrosoft.com
   cookie-secure: "true"
-  upstreams: file:///dev/null
+  upstream: file:///dev/null
   pass-access-token: "true"
   set-authorization-header: "true"
 
