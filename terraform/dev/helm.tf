@@ -82,20 +82,3 @@ resource "helm_release" "cert_manager" {
     "${file("./values/cert-manager-values.yaml")}"
   ]
 }
-
-#############################
-# oauth2-proxy Helm Chart
-#############################
-
-resource "helm_release" "oauth2_proxy" {
-  depends_on       = [azurerm_kubernetes_cluster.aks]
-  name             = "oauth2-proxy"
-  namespace        = "authgate"
-  repository       = "https://oauth2-proxy.github.io/manifests"
-  chart            = "oauth2-proxy"
-  create_namespace = true
-  version          = "7.12.13"
-  values = [
-    file("${path.module}/values/oauth-proxy.yaml")
-  ]
-}
