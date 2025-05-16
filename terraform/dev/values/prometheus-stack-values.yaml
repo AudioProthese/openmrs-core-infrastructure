@@ -2,21 +2,11 @@
 prometheus:
   ingress:
     enabled: true
-    ingressClassName: "webapprouting.kubernetes.azure.com"
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-prod
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/auth-url:    "https://oauth.dev.audioprothese.ovh/oauth2/auth"
-      nginx.ingress.kubernetes.io/auth-signin: "https://oauth.dev.audioprothese.ovh/oauth2/start?rd=$scheme://$host$request_uri"
-    labels: {}
-    path: /
-    pathType: Prefix
+    ingressClassName: webapprouting.kubernetes.azure.com
     hosts:
       - prometheus.dev.audioprothese.ovh
-    tls:
-      - hosts:
-          - prometheus.dev.audioprothese.ovh
-        secretName: prometheus-tls
+    path: /
+    pathType: Prefix
 
 grafana:
   adminUser: admin
@@ -61,7 +51,7 @@ grafana:
       client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
       client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
       scopes: "openid profile email offline_access"
-      auto_assign_org: true
+      auto_assign_org: "true"
       auto_assign_org_role: Admin
       auth_url:  "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/authorize"
       token_url: "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/token"

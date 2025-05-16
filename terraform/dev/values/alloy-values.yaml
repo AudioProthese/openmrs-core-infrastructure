@@ -142,9 +142,6 @@ alloy:
 ingress:
   enabled: true
   ingressClassName: "webapprouting.kubernetes.azure.com"
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   labels: {}
   path: /
   pathType: Prefix
@@ -152,7 +149,3 @@ ingress:
     - alloy.dev.audioprothese.ovh
   faroPort: 12345
   extraPaths: []
-  tls:
-    - hosts:
-        - alloy.dev.audioprothese.ovh
-      secretName: alloy-tls
