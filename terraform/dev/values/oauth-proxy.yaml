@@ -13,6 +13,7 @@ extraArgs:
   pass-access-token: "true"
   set-authorization-header: "true"
   oidc-email-claim: "preferred_username"
+  reverse-proxy: "true"
 
 ingress:
   enabled: true
