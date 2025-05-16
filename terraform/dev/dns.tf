@@ -18,7 +18,7 @@ resource "ovh_domain_name_servers" "name_servers" {
   dynamic "servers" {
     for_each = azurerm_dns_zone.audioprothese_ovh.name_servers
     content {
-      host = replace(servers.value, "\\.$", "")
+      host = trimsuffix(servers.value, ".")
     }
   }
 }
