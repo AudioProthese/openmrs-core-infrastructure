@@ -29,7 +29,7 @@ YAML
 }
 
 ##########################
-# OpenMRS Ingress
+# OpenMRS Gateway Ingress
 ##########################
 
 resource "kubectl_manifest" "openmrs_ingress" {
