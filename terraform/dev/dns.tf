@@ -1,5 +1,5 @@
 #####################
-# Azure DNS Zone
+# Azure DNS
 #####################
 
 resource "azurerm_dns_zone" "audioprothese_ovh" {
