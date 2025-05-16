@@ -6,27 +6,29 @@ certificate:
 
 server:
   autoscaling:
-    enabled: true
-    minReplicas: 2
+    enabled: false
   ingress:
     enabled: true
     ingressClassName: webapprouting.kubernetes.azure.com
     annotations:
-      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       cert-manager.io/cluster-issuer: letsencrypt-prod
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      appgw.ingress.kubernetes.io/backend-protocol: "https"
     tls: true
 
 redis-ha:
-  enabled: true
+  enabled: false
 
 controller:
   replicas: 1
 
 repoServer:
   autoscaling:
-    enabled: true
-    minReplicas: 2
+    enabled: false
 
 applicationSet:
-  replicas: 2
+  replicas: 1
+
+configs:
+  params:
+    server.insecure: true
