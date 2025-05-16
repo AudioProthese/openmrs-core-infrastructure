@@ -12,7 +12,7 @@ extraArgs:
   upstream: file:///dev/null
   pass-access-token: "true"
   set-authorization-header: "true"
-  oidc_email_claim: "preferred_username"
+  oidc-email-claim: "preferred_username"
 
 ingress:
   enabled: true
