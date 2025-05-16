@@ -58,6 +58,3 @@ spec:
         - openmrs.dev.audioprothese.ovh
 YAML
 }
-
-
-
