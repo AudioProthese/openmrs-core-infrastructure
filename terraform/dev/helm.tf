@@ -82,3 +82,20 @@ resource "helm_release" "cert_manager" {
     "${file("./values/cert-manager-values.yaml")}"
   ]
 }
+
+#############################
+# ArgoCD Helm Chart
+#############################
+
+resource "helm_release" "argocd" {
+  depends_on       = [azurerm_kubernetes_cluster.aks]
+  name             = "argocd"
+  namespace        = "argocd"
+  repository       = "https://argoproj.github.io/argo-helm"
+  chart            = "argo-cd"
+  create_namespace = true
+  version          = "8.0.3"
+  values = [
+    "${file("./values/argocd-values.yaml")}"
+  ]
+}
