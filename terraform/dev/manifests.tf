@@ -1,5 +1,5 @@
 #############################
-# Cert Manager ClusterIssuer
+# Cert Manager Cluster Issuer
 #############################
 
 resource "kubectl_manifest" "cluster_issuer" {
