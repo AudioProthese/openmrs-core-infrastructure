@@ -88,12 +88,12 @@ resource "helm_release" "cert_manager" {
 #############################
 
 resource "helm_release" "oauth2_proxy" {
-  depends_on       = [azurerm_kubernetes_cluster.aks]
+  depends_on       = [azurerm_kubernetes_cluster.aks, helm_release.prometheus-stack]
   name             = "oauth2-proxy"
-  namespace        = "authgate"
+  namespace        = "monitoring"
   repository       = "https://oauth2-proxy.github.io/manifests"
   chart            = "oauth2-proxy"
-  create_namespace = true
+  create_namespace = false
   version          = "7.12.13"
   values = [
     file("${path.module}/values/oauth-proxy.yaml")
