@@ -7,7 +7,7 @@ extraArgs:
   provider: oidc
   oidc-issuer-url: https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/v2.0
   redirect-url: https://oauth.dev.audioprothese.ovh/oauth2/callback
-  email-domains: audioprotheseplus.onmicrosoft.com
+  email-domain: audioprotheseplus.onmicrosoft.com
   cookie-secure: "true"
   upstreams: file:///dev/null
   pass-access-token: "true"
