@@ -6,8 +6,8 @@ prometheus:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/auth-url:    "https://$host/oauth2/auth"
-      nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$scheme://$host$request_uri"
+      nginx.ingress.kubernetes.io/auth-url:    "https://oauth.dev.audioprothese.ovh/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://oauth.dev.audioprothese.ovh/oauth2/start?rd=$scheme://$host$request_uri"
     labels: {}
     path: /
     pathType: Prefix
