@@ -34,7 +34,7 @@ grafana:
         - name: Loki
           type: loki
           url: http://loki-gateway.loki.svc.cluster.local/
-          
+
   envFromSecret: grafana-azuread-secret
 
   grafana.ini:
@@ -53,8 +53,8 @@ grafana:
       scopes: "openid profile email offline_access"
       auto_assign_org: "true"
       auto_assign_org_role: Admin
-      auth_url:  "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/authorize"
+      auth_url: "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/authorize"
       token_url: "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/token"
-      api_url:   "https://graph.microsoft.com/v1.0/me"
+      api_url: "https://graph.microsoft.com/v1.0/me"
       email_attribute_path: preferred_username
       allow_sign_up: true
