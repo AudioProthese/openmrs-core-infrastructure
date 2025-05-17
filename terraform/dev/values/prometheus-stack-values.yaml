@@ -44,6 +44,10 @@ grafana:
 
     auth:
       disable_login_form: true
+    
+    users:
+      auto_assign_org: true
+      auto_assign_org_role: Admin
 
     auth.generic_oauth:
       enabled: true
@@ -51,10 +55,12 @@ grafana:
       client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
       client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
       scopes: "openid profile email offline_access"
-      auto_assign_org: "true"
-      auto_assign_org_role: Admin
-      auth_url: "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/authorize"
+      allow_assign_grafana_admin: "true"
+      auto_login: "true"
+      auth_url:  "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/authorize"
       token_url: "https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/oauth2/v2.0/token"
       api_url: "https://graph.microsoft.com/v1.0/me"
       email_attribute_path: preferred_username
       allow_sign_up: true
+      log_auth_info: true
+      role_attribute_path: "Admin" 
