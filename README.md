@@ -105,3 +105,39 @@ kubectl apply -f ingress.yaml
 
 - [kubernetes cluster](https://grafana.com/grafana/dashboards/12202-kubernetes-cluster-overview/)
 - [Prometheus](https://grafana.com/grafana/dashboards/3662-prometheus-2-0-overview/)
+
+
+
+# Middleware d’authentification Zero Trust pour Prometheus (Azure AKS)
+
+## 🛡️ Pourquoi ce setup ?
+
+Dans une logique **Zero Trust**, chaque accès à une application sensible doit être authentifié, même en interne.  
+Beaucoup d’outils comme **Prometheus** n’ont pas de gestion d’utilisateurs native ou d’intégration SSO d’entreprise (Azure AD, Google, etc).  
+Pour répondre à ce besoin de sécurité et d’unification de l’authentification :
+
+- On utilise **Web App Routing** (NGINX managé par Azure) pour centraliser les accès HTTP/HTTPS.
+- On place un **middleware d’authentification** devant l’application : **OAuth2 Proxy**.
+
+## 🔗 Le rôle du middleware OAuth2 Proxy
+
+- **OAuth2 Proxy** agit comme un “garde du corps” devant Prometheus.
+- Il intercepte toute requête HTTP(s) arrivant à l’application.
+- S’il n’y a pas de session authentifiée, il force une authentification SSO via **Azure Active Directory** (OpenID Connect).
+- Après validation, il redirige l’utilisateur vers Prometheus, tout en gardant l’accès protégé (Zero Trust appliqué).
+- Les sessions sont stockées côté serveur (ici Redis), ce qui évite les gros cookies et sécurise le processus.
+
+## 🏗️ Pourquoi ce schéma Zero Trust est pertinent ?
+
+- **Prometheus n’a pas de SSO** → on ne veut pas exposer ses dashboards à tout le monde.
+- On veut **unifier l’accès** (un seul login pour tout l’écosystème d’entreprise).
+- On évite de modifier Prometheus ou de patcher le code : l’intégration est “transparent reverse proxy”.
+
+## 🦾 Comment ça marche pour l’utilisateur ?
+
+1. L’utilisateur tente d’accéder à `https://prometheus.dev.audioprothese.ovh`.
+2. **NGINX (Web App Routing)** vérifie via les annotations si la requête est authentifiée (appelle `/oauth2/auth`).
+3. **OAuth2 Proxy** vérifie la session (cookie + Redis).  
+   - S’il n’y a pas de session, il renvoie vers la page de login Azure AD.
+   - Sinon, il laisse passer.
+4. Après login, l’utilisateur arrive sur Prometheus

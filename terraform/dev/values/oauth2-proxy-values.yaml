@@ -1,0 +1,57 @@
+proxyVarsAsSecrets: true
+
+sessionStorage:
+  type: redis
+  redis:
+    clientType: standalone
+    standalone:
+      connectionUrl: redis://oauth2-proxy-redis-master:6379/0
+
+initContainers:
+  waitForRedis:
+    enabled: false
+
+redis:
+  enabled: true
+
+config:
+  existingSecret: oauth2-proxy-secret
+
+extraArgs:
+  - --provider=oidc
+  - --oidc-issuer-url=https://login.microsoftonline.com/8a25df97-9f2b-4ef1-a9e7-3faf585640e8/v2.0
+  - --scope=openid email profile
+  - --email-domain=*
+  - --redirect-url=https://oauth2.dev.audioprothese.ovh/oauth2/callback
+  - --skip-provider-button
+  - --reverse-proxy
+  - --cookie-secure=true
+  - --cookie-domain=.audioprothese.ovh
+  - --cookie-name=_oauth2_proxy
+  - --cookie-refresh=2m
+  - --cookie-expire=24h
+  - --whitelist-domain=.audioprothese.ovh
+  - --set-authorization-header=false         
+  - --pass-access-token=false               
+  - --pass-user-headers=false                
+  - --set-xauthrequest=false               
+  - --oidc-email-claim=preferred_username
+
+ingress:
+  enabled: true
+  className: webapprouting.kubernetes.azure.com
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - oauth2.dev.audioprothese.ovh
+  path: /oauth2
+  pathType: Prefix
+  tls:
+    - secretName: oauth2-tls
+      hosts:
+        - oauth2.dev.audioprothese.ovh
+
+service:
+  type: ClusterIP
+  portNumber: 4180
