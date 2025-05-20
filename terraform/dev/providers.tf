@@ -17,15 +17,11 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = "1.19.0"
     }
-    ovh = {
-      source  = "ovh/ovh"
-      version = "2.2.0"
-    }
   }
 
   backend "azurerm" {
     resource_group_name  = "rg-openmrscore-dev"
-    storage_account_name = "openmrscoredevsa01"
+    storage_account_name = "openmrscoredevsav1"
     container_name       = "tfstate-dev"
     key                  = "terraform.tfstate"
   }
@@ -55,8 +51,4 @@ provider "kubectl" {
   client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate)
   client_key             = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_key)
   load_config_file       = false
-}
-
-provider "ovh" {
-  endpoint = "ovh-eu"
 }
