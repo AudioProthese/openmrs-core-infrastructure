@@ -7,19 +7,19 @@ global:
 openmrs-backend:
   image:
     tag: "latest"
-    repository: "openmrsdevacr.azurecr.io/openmrscore-backend"
+    repository: "openmrsacrdev.azurecr.io/openmrscore-backend"
 
 # OpenMRS Frontend settings
 openmrs-frontend:
   image:
     tag: "latest"
-    repository: "openmrsdevacr.azurecr.io/openmrscore-frontend"
+    repository: "openmrsacrdev.azurecr.io/openmrscore-frontend"
 
 # OpenMRS Gateway settings
 openmrs-gateway:
   image:
     tag: "latest"
-    repository: "openmrsdevacr.azurecr.io/openmrscore-gateway"
+    repository: "openmrsacrdev.azurecr.io/openmrscore-gateway"
 
   service:
     type: ClusterIP
