@@ -99,3 +99,17 @@ resource "helm_release" "argocd" {
     "${file("./values/argocd-values.yaml")}"
   ]
 }
+
+#############################
+# ESO Helm Chart
+#############################
+
+resource "helm_release" "eso" {
+  depends_on       = [azurerm_kubernetes_cluster.aks]
+  name             = "eso"
+  namespace        = "eso"
+  repository       = "https://charts.external-secrets.io"
+  chart            = "external-secrets"
+  create_namespace = true
+  version          = "0.17.0"
+}
