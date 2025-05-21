@@ -81,10 +81,10 @@ YAML
 }
 
 ##############################
-# ESO ClusterSecretStore
+# ESO SecretStore
 ##############################
 
-resource "kubectl_manifest" "clustersecretstore" {
+resource "kubectl_manifest" "secretstore" {
   depends_on = [kubectl_manifest.sa]
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1
