@@ -46,5 +46,5 @@ resource "azurerm_federated_identity_credential" "ESOFederatedIdentity" {
   audience            = ["api://AzureADTokenExchange"]
   issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url
   parent_id           = azurerm_kubernetes_cluster.aks.kubelet_identity[0].user_assigned_identity_id
-  subject             = "system:serviceaccount:default:workload-identity-sa"
+  subject             = "system:serviceaccount:authgate:workload-identity-sa"
 }
