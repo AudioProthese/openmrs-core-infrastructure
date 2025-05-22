@@ -2,11 +2,18 @@
 # Role Assignments 
 #########################
 
-# Vault AKS User
-resource "azurerm_role_assignment" "keyvault_secrets_user" {
+# User-assigned managed identity for External Secrets Operator (ESO)
+resource "azurerm_user_assigned_identity" "eso_workload_identity" {
+  name                = "eso-workload-identity"
+  location            = var.location
+  resource_group_name = var.resource_group
+}
+
+# Role assignment that grants the ESO workload identity permission to read secrets from Key Vault
+resource "azurerm_role_assignment" "eso_keyvault_secrets_user" {
   scope                            = azurerm_key_vault.vault.id
   role_definition_name             = "Key Vault Secrets User"
-  principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+  principal_id                     = azurerm_user_assigned_identity.eso_workload_identity.principal_id
   skip_service_principal_aad_check = true
 }
 
@@ -49,11 +56,11 @@ resource "azurerm_role_assignment" "user_keyvault_secret_access" {
 ###############################
 
 # OIDC AKS
-resource "azurerm_federated_identity_credential" "ESOFederatedIdentity" {
-  name                = "ESOFederatedIdentity"
-  resource_group_name = azurerm_kubernetes_cluster.aks.node_resource_group
+resource "azurerm_federated_identity_credential" "eso_federated_identity" {
+  name                = "eso-federated-credential"
+  resource_group_name = azurerm_user_assigned_identity.eso_workload_identity.resource_group_name
+  parent_id           = azurerm_user_assigned_identity.eso_workload_identity.id
   audience            = ["api://AzureADTokenExchange"]
   issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url
-  parent_id           = azurerm_kubernetes_cluster.aks.kubelet_identity[0].user_assigned_identity_id
   subject             = "system:serviceaccount:eso:workload-identity-sa"
 }

@@ -74,7 +74,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    azure.workload.identity/client-id: "${azurerm_kubernetes_cluster.aks.kubelet_identity[0].client_id}"
+    azure.workload.identity/client-id: "${azurerm_user_assigned_identity.eso_workload_identity.client_id}"
   name: workload-identity-sa
   namespace: eso
 YAML
