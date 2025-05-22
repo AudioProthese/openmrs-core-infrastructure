@@ -76,23 +76,22 @@ metadata:
   annotations:
     azure.workload.identity/client-id: "${azurerm_kubernetes_cluster.aks.kubelet_identity[0].client_id}"
   name: workload-identity-sa
-  namespace: eso
+  namespace: authgate
 YAML
 }
 
 ##############################
-# ESO ClusterSecretStore
+# ESO SecretStore
 ##############################
 
-resource "kubectl_manifest" "clustersecretstore" {
+resource "kubectl_manifest" "secretstore" {
   depends_on = [kubectl_manifest.sa]
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1
-kind: ClusterSecretStoreecretStore
+kind: SecretStore
 metadata:
-  name: azure-cluster-secret-store
-  annotations:
-    external-secrets.io/disable-maintenance-checks: "true"
+  name: azure-secret-store
+  namespace: authgate
 spec:
   provider:
     azurekv:
@@ -101,38 +100,39 @@ spec:
       tenantId: ${azurerm_key_vault.vault.tenant_id}
       serviceAccountRef:
         name: workload-identity-sa
-  conditions:
-    - namespaces:
-        - "monitoring"
-        - "authgate"
 YAML
 }
 
-# ###############################
-# # ESO ExternalSecret
-# ###############################
+###############################
+# ESO ExternalSecret
+###############################
 
-# resource "kubectl_manifest" "grafana_azuread_secret" {
-#   depends_on = [kubectl_manifest.secretstore]
-#   yaml_body  = <<YAML
-# apiVersion: external-secrets.io/v1beta1
-# kind: ExternalSecret
-# metadata:
-#   name: grafana-azuread-secret
-# spec:
-#   refreshPolicy: Periodic
-#   refreshInterval: 1h 
-#   secretStoreRef:
-#     name: azure-secret-store
-#     kind: SecretStore
-#   target:
-#     name: grafana-azuread-secret
-#   data:
-#   - secretKey: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
-#     remoteRef:
-#       key: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
-#   - secretKey: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
-#     remoteRef:
-#       key: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
-# YAML
-# }
+resource "kubectl_manifest" "externalsecret" {
+  depends_on = [kubectl_manifest.secretstore]
+  yaml_body  = <<YAML
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: oauth2-proxy-secret
+  namespace: authgate
+spec:
+  refreshPolicy: Periodic
+  refreshInterval: 1h
+  secretStoreRef:
+    name: azure-secret-store
+    kind: SecretStore
+  target:
+    name: oauth2-proxy-secret
+    creationPolicy: Owner
+  data:
+  - secretKey: client-id
+    remoteRef:
+      key: oauth2-proxy-client-id      
+  - secretKey: client-secret
+    remoteRef:
+      key: oauth2-proxy-client-secret   
+  - secretKey: cookie-secret
+    remoteRef:
+      key: oauth2-proxy-cookie-secret 
+YAML
+}

@@ -37,3 +37,9 @@ variable "dns_zone_name" {
   type        = string
   default     = "audioprothese.ovh"
 }
+
+variable "user_object_id" {
+  type        = string
+  description = "Object ID of the Azure AD user"
+  default     = "163822a1-8e23-4931-96fd-9356e34a3365"
+}

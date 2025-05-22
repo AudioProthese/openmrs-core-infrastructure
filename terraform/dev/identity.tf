@@ -35,6 +35,14 @@ resource "azurerm_role_assignment" "external_dns" {
   skip_service_principal_aad_check = true
 }
 
+# Role Assignment for Key Vault Secrets User to your Azure user account
+resource "azurerm_role_assignment" "user_keyvault_secret_access" {
+  scope                            = azurerm_key_vault.vault.id
+  role_definition_name             = "Key Vault Secrets User"
+  principal_id                     = var.user_object_id
+  skip_service_principal_aad_check = true
+}
+
 ###############################
 # Federated Identity Credential
 ###############################
@@ -46,5 +54,5 @@ resource "azurerm_federated_identity_credential" "ESOFederatedIdentity" {
   audience            = ["api://AzureADTokenExchange"]
   issuer              = azurerm_kubernetes_cluster.aks.oidc_issuer_url
   parent_id           = azurerm_kubernetes_cluster.aks.kubelet_identity[0].user_assigned_identity_id
-  subject             = "system:serviceaccount:default:workload-identity-sa"
+  subject             = "system:serviceaccount:authgate:workload-identity-sa"
 }
