@@ -40,6 +40,7 @@ resource "azurerm_role_assignment" "user_keyvault_secret_access" {
   scope                            = azurerm_key_vault.vault.id
   role_definition_name             = "Key Vault Secrets User"
   principal_id                     = var.user_object_id
+  principal_type                   = "User"
   skip_service_principal_aad_check = true
 }
 
