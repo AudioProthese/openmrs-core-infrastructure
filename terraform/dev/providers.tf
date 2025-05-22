@@ -17,6 +17,10 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = "1.19.0"
     }
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "~> 2.25"
+    }
   }
 
   backend "azurerm" {
@@ -34,6 +38,9 @@ terraform {
 provider "azurerm" {
   features {}
 
+}
+
+provider "azuread" {
 }
 
 provider "helm" {

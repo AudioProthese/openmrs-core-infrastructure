@@ -35,6 +35,14 @@ resource "azurerm_role_assignment" "external_dns" {
   skip_service_principal_aad_check = true
 }
 
+# Role Assignment for Key Vault Secrets User to your Azure user account
+resource "azurerm_role_assignment" "user_keyvault_secret_access" {
+  scope                = azurerm_key_vault.vault.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = data.azuread_user.current_user.object_id
+  skip_service_principal_aad_check = true
+}
+
 ###############################
 # Federated Identity Credential
 ###############################

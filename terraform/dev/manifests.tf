@@ -113,19 +113,26 @@ resource "kubectl_manifest" "externalsecret" {
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: <external-secret-name>
+  name: oauth2-proxy-secret
   namespace: authgate
 spec:
   refreshPolicy: Periodic
-  refreshInterval: 1h 
+  refreshInterval: 1h
   secretStoreRef:
     name: azure-secret-store
     kind: SecretStore
   target:
-    name: <secret-name-in-k8s>
+    name: oauth2-proxy-secret
+    creationPolicy: Owner
   data:
-  - secretKey: <secret-key-in-k8s>
+  - secretKey: client-id
     remoteRef:
-      key: <secret-key-in-azure-key-vault>
+      key: oauth2-proxy-client-id      
+  - secretKey: client-secret
+    remoteRef:
+      key: oauth2-proxy-client-secret   
+  - secretKey: cookie-secret
+    remoteRef:
+      key: oauth2-proxy-cookie-secret 
 YAML
 }
