@@ -38,7 +38,7 @@ resource "azurerm_role_assignment" "external_dns" {
 # Role Assignment for Key Vault Secrets User to your Azure user account
 resource "azurerm_role_assignment" "user_keyvault_secret_access" {
   scope                            = azurerm_key_vault.vault.id
-  role_definition_name             = "Key Vault Secrets User"
+  role_definition_name             = "Key Vault Administrator"
   principal_id                     = var.user_object_id
   principal_type                   = "User"
   skip_service_principal_aad_check = true
