@@ -31,10 +31,10 @@ extraArgs:
   - --cookie-refresh=2m
   - --cookie-expire=24h
   - --whitelist-domain=.audioprothese.ovh
-  - --set-authorization-header=false         
+  - --set-authorization-header=false        
   - --pass-access-token=false               
-  - --pass-user-headers=false                
-  - --set-xauthrequest=false               
+  - --pass-user-headers=true              
+  - --set-xauthrequest=true               
   - --oidc-email-claim=preferred_username
 
 ingress:

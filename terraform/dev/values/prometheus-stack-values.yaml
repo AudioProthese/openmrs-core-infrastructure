@@ -33,6 +33,7 @@ grafana:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/auth-url: "https://oauth2.dev.audioprothese.ovh/oauth2/auth"
       nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.dev.audioprothese.ovh/oauth2/start?rd=$scheme://$host$escaped_request_uri"
+      nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Request-User, X-Auth-Request-Email
     labels: {}
     path: /
     pathType: Prefix
@@ -61,8 +62,8 @@ grafana:
       
     auth.proxy:
       enabled: true
-      header_name: X-Email
-      header_property: email  
+      header_name: X-Auth-Request-Email
+      header_property: email
       auto_sign_up: true
     
     users:
