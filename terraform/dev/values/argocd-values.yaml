@@ -14,6 +14,8 @@ server:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       appgw.ingress.kubernetes.io/backend-protocol: "https"
+      nginx.ingress.kubernetes.io/auth-url: "https://oauth2.dev.audioprothese.ovh/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.dev.audioprothese.ovh/oauth2/start?rd=$scheme://$host$escaped_request_uri"
     tls: true
 
 redis-ha:
@@ -32,3 +34,4 @@ applicationSet:
 configs:
   params:
     server.insecure: true
+    server.disable.auth: true
