@@ -76,7 +76,7 @@ metadata:
   annotations:
     azure.workload.identity/client-id: "${azurerm_kubernetes_cluster.aks.kubelet_identity[0].client_id}"
   name: workload-identity-sa
-  namespace: authgate
+  namespace: eso
 YAML
 }
 
@@ -91,7 +91,7 @@ apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: azure-secret-store
-  namespace: authgate
+  namespace: eso
 spec:
   provider:
     azurekv:
@@ -114,7 +114,7 @@ apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: oauth2-proxy-secret
-  namespace: authgate
+  namespace: eso
 spec:
   refreshPolicy: Periodic
   refreshInterval: 1h
@@ -123,6 +123,7 @@ spec:
     kind: SecretStore
   target:
     name: oauth2-proxy-secret
+    namespace: authgate    
     creationPolicy: Owner
   data:
   - secretKey: client-id
