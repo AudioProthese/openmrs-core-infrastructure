@@ -128,4 +128,13 @@ resource "helm_release" "eso" {
   chart            = "external-secrets"
   create_namespace = true
   version          = "0.17.0"
+
+  values = [
+    yamlencode({
+      serviceAccount = {
+        create = false
+        name   = "workload-identity-sa"
+      }
+    })
+  ]
 }
