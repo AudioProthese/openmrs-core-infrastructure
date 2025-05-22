@@ -8,9 +8,8 @@
 
 *This Git repository contains the source code to set up and manage AudioProthese+ infrastructure using Terraform.*
 
-## AZ CLI to create a Service Principal with Federated Credential
 
-- [docs](https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-azure)
+## AudioProthèse+ Infrastructure Wiki
 
 ```bash
 az ad app create --display-name "gh-terraform-sp"
@@ -141,3 +140,6 @@ Pour répondre à ce besoin de sécurité et d’unification de l’authentifica
    - S’il n’y a pas de session, il renvoie vers la page de login Azure AD.
    - Sinon, il laisse passer.
 4. Après login, l’utilisateur arrive sur Prometheus
+
+Full infrastructure documentation is available here : <https://audioprothese.github.io/openmrs-architecture-documentation/infrastructure/iac/>
+

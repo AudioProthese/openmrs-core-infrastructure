@@ -16,6 +16,15 @@ prometheus:
       nginx.ingress.kubernetes.io/auth-url: "https://oauth2.dev.audioprothese.ovh/oauth2/auth"
       nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.dev.audioprothese.ovh/oauth2/start?rd=$scheme://$host$escaped_request_uri"
 
+alertmanager:
+  ingress:
+    enabled: true
+    ingressClassName: webapprouting.kubernetes.azure.com
+    hosts:
+      - alertmanager.dev.audioprothese.ovh
+    path: /
+    pathType: Prefix
+
 grafana:
   ingress:
     enabled: true
@@ -49,7 +58,7 @@ grafana:
 
     auth:
       disable_login_form: true
-  
+      
     auth.proxy:
       enabled: true
       header_name: X-Email
