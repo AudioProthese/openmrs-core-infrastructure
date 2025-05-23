@@ -63,29 +63,12 @@ spec:
 YAML
 }
 
-#############################
-# ESO Service Account
-#############################
-
-resource "kubectl_manifest" "sa" {
-  depends_on = [helm_release.eso]
-  yaml_body  = <<YAML
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  annotations:
-    azure.workload.identity/client-id: "${azurerm_user_assigned_identity.eso_workload_identity.client_id}"
-  name: workload-identity-sa
-  namespace: eso
-YAML
-}
-
 ##############################
 # ESO ClusterSecretStore
 ##############################
 
 resource "kubectl_manifest" "cluster_secretstore" {
-  depends_on = [kubectl_manifest.sa]
+  depends_on = [helm_release.eso]
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1
 kind: ClusterSecretStore
@@ -108,7 +91,7 @@ YAML
 ###############################
 
 resource "kubectl_manifest" "externalsecret" {
-  depends_on = [kubectl_manifest.cluster_secretstore]
+  depends_on = [helm_release.eso]
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
