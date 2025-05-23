@@ -108,7 +108,7 @@ YAML
 ###############################
 
 resource "kubectl_manifest" "externalsecret" {
-  depends_on = [kubectl_manifest.secretstore]
+  depends_on = [kubectl_manifest.cluster_secretstore]
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
