@@ -81,17 +81,16 @@ YAML
 }
 
 ##############################
-# ESO SecretStore
+# ESO ClusterSecretStore
 ##############################
 
-resource "kubectl_manifest" "secretstore" {
+resource "kubectl_manifest" "cluster_secretstore" {
   depends_on = [kubectl_manifest.sa]
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1
-kind: SecretStore
+kind: ClusterSecretStore
 metadata:
   name: azure-secret-store
-  namespace: eso
 spec:
   provider:
     azurekv:
@@ -100,6 +99,7 @@ spec:
       tenantId: ${azurerm_key_vault.vault.tenant_id}
       serviceAccountRef:
         name: workload-identity-sa
+        namespace: eso
 YAML
 }
 
@@ -108,22 +108,21 @@ YAML
 ###############################
 
 resource "kubectl_manifest" "externalsecret" {
-  depends_on = [kubectl_manifest.secretstore]
+  depends_on = [kubectl_manifest.cluster_secretstore]
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: oauth2-proxy-secret
-  namespace: eso
+  namespace: authgate
 spec:
   refreshPolicy: Periodic
   refreshInterval: 1h
   secretStoreRef:
     name: azure-secret-store
-    kind: SecretStore
+    kind: ClusterSecretStore
   target:
     name: oauth2-proxy-secret
-    namespace: authgate    
     creationPolicy: Owner
   data:
   - secretKey: client-id
