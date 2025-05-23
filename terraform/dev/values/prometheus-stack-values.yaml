@@ -24,6 +24,115 @@ alertmanager:
       - alertmanager.dev.audioprothese.ovh
     path: /
     pathType: Prefix
+    tls:
+      - hosts:
+          - alertmanager.dev.audioprothese.ovh
+        secretName: alertmanager-tls
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/auth-url: "https://oauth2.dev.audioprothese.ovh/oauth2/auth"
+      nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.dev.audioprothese.ovh/oauth2/start?rd=$scheme://$host$escaped_request_uri"
+
+  config:
+    global:
+      resolve_timeout: 5m
+
+    route:
+      group_by: ['alertname', 'cluster', 'service']
+      group_wait: 10s
+      group_interval: 10s
+      repeat_interval: 12h
+      receiver: 'ticket-webhook'
+      routes:
+        - match:
+            severity: critical
+          receiver: 'critical-ticket-webhook'
+          group_wait: 0s
+          repeat_interval: 1h
+        
+        - match:
+            severity: warning
+          receiver: 'warning-ticket-webhook'
+          group_wait: 5m
+          repeat_interval: 6h
+
+    receivers:
+      - name: 'ticket-webhook'
+        telegram_configs:
+          - bot_token: '7728769790:AAHMvWSa9KU-gtOknUr3WW-T7D2eNa9vbQA'
+            chat_id: -1002316835762 
+            api_url: 'https://api.telegram.org'
+            send_resolved: true
+            parse_mode: 'HTML'
+            message: |
+              <b>🎯 ALERTE MONITORING</b>
+              
+              <b>Service:</b> {{ .GroupLabels.service | default "inconnu" }}
+              <b>Environnement:</b> {{ .GroupLabels.cluster | default "dev" }}
+              <b>Sévérité:</b> {{ .GroupLabels.severity | default "info" }}
+              
+              {{ range .Alerts }}
+              <b>📋 {{ .Annotations.summary }}</b>
+              {{ .Annotations.description }}
+              <i>Instance:</i> {{ .Labels.instance }}
+              <i>Statut:</i> {{ .Status }}
+              <i>Début:</i> {{ .StartsAt.Format "15:04:05" }}
+              {{ if .EndsAt }}
+              <i>Résolu:</i> {{ .EndsAt.Format "15:04:05" }}
+              {{ end }}
+              
+              {{ end }}
+
+      - name: 'critical-ticket-webhook'
+        telegram_configs:
+          - bot_token: '7728769790:AAHMvWSa9KU-gtOknUr3WW-T7D2eNa9vbQA'
+            chat_id: -1002316835762  
+            api_url: 'https://api.telegram.org'
+            send_resolved: true
+            parse_mode: 'HTML'
+            message: |
+              <b>🚨 ALERTE CRITIQUE 🚨</b>
+              @here @channel
+              
+              <b>Service:</b> {{ .GroupLabels.service | default "inconnu" }}
+              <b>Environnement:</b> {{ .GroupLabels.cluster | default "dev" }}
+              <b>Priorité:</b> HAUTE - ACTION IMMÉDIATE
+              
+              {{ range .Alerts }}
+              <b>⚠️ {{ .Annotations.summary }}</b>
+              {{ .Annotations.description }}
+              <i>Instance:</i> {{ .Labels.instance }}
+              <i>Valeur:</i> {{ .Annotations.current_value | default "N/A" }}
+              <i>Seuil:</i> {{ .Annotations.threshold | default "N/A" }}
+              <i>Début:</i> {{ .StartsAt.Format "15:04:05" }}
+              {{ end }}
+
+      - name: 'warning-ticket-webhook'
+        telegram_configs:
+          - bot_token: '7728769790:AAHMvWSa9KU-gtOknUr3WW-T7D2eNa9vbQA'
+            chat_id: -1002316835762
+            api_url: 'https://api.telegram.org'
+            send_resolved: true
+            parse_mode: 'HTML'
+            message: |
+              <b>⚠️ WARNING</b>
+              
+              <b>Service:</b> {{ .GroupLabels.service | default "inconnu" }}
+              <b>Environnement:</b> {{ .GroupLabels.cluster | default "dev" }}
+              
+              {{ range .Alerts }}
+              <b>{{ .Annotations.summary }}</b>
+              {{ .Annotations.description }}
+              <i>Instance:</i> {{ .Labels.instance }}
+              {{ end }}
+
+    inhibit_rules:
+      - source_match:
+          severity: 'critical'
+        target_match:
+          severity: 'warning'
+        equal: ['alertname', 'instance']
 
 grafana:
   ingress:
@@ -44,6 +153,7 @@ grafana:
           - grafana.dev.audioprothese.ovh
         secretName: grafana-tls
     ingressClassName: "webapprouting.kubernetes.azure.com"
+  
   datasources:
     datasources.yaml:
       apiVersion: 1
@@ -51,6 +161,9 @@ grafana:
         - name: Loki
           type: loki
           url: http://loki-gateway.loki.svc.cluster.local/
+        - name: Alertmanager
+          type: alertmanager
+          url: http://kube-prometheus-stack-alertmanager:9093
 
   grafana.ini:
     server:
