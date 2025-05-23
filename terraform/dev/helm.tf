@@ -105,7 +105,7 @@ resource "helm_release" "argocd" {
 #############################
 
 resource "helm_release" "oauth2_proxy" {
-  depends_on       = [azurerm_kubernetes_cluster.aks]
+  depends_on       = [azurerm_kubernetes_cluster.aks, helm_release.eso]
   name             = "oauth2-proxy"
   namespace        = "authgate"
   repository       = "https://oauth2-proxy.github.io/manifests"
@@ -121,19 +121,24 @@ resource "helm_release" "oauth2_proxy" {
 #############################
 
 resource "helm_release" "eso" {
-  depends_on       = [azurerm_kubernetes_cluster.aks]
+  depends_on       = [azurerm_kubernetes_cluster.aks] # plus besoin de kubectl_manifest.sa
   name             = "eso"
   namespace        = "eso"
   repository       = "https://charts.external-secrets.io"
   chart            = "external-secrets"
-  create_namespace = true
   version          = "0.17.0"
+  create_namespace = true
 
   values = [
     yamlencode({
+      installCRDs = true
+
       serviceAccount = {
-        create = false
+        create = true
         name   = "workload-identity-sa"
+        annotations = {
+          "azure.workload.identity/client-id" = azurerm_user_assigned_identity.eso_workload_identity.client_id
+        }
       }
     })
   ]
