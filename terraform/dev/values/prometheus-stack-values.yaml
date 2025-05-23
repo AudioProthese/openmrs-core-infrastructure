@@ -9,7 +9,7 @@ prometheus:
     externalLabels:
       cluster: "dev"
       environment: "development"
-      region: "azure-westeurope"
+      region: "azure-francecentral"
     
     # Configuration to automatically retrieve cluster information
     additionalScrapeConfigs: |
