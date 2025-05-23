@@ -1,4 +1,29 @@
+#####################################
+# Prometheus / Alertmanager / Grafana
+# values.yaml for kube-prometheus-stack
+#####################################
+
 prometheus:
+  prometheusSpec:
+    # Add external labels to all metrics
+    externalLabels:
+      cluster: "dev"
+      environment: "development"
+      region: "azure-westeurope"
+    
+    # Configuration to automatically retrieve cluster information
+    additionalScrapeConfigs: |
+      - job_name: 'kubernetes-cluster-info'
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+            target_label: cluster_node
+          - source_labels: [__meta_kubernetes_node_label_node_kubernetes_io_instance_type]
+            target_label: instance_type
+          - source_labels: [__meta_kubernetes_node_label_topology_kubernetes_io_zone]
+            target_label: availability_zone
+
   ingress:
     enabled: true
     ingressClassName: webapprouting.kubernetes.azure.com
@@ -17,6 +42,12 @@ prometheus:
       nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.dev.audioprothese.ovh/oauth2/start?rd=$scheme://$host$escaped_request_uri"
 
 alertmanager:
+  alertmanagerSpec:
+    secrets:
+      - telegram-alertmanager-secret
+    podAnnotations:
+      checksum/telegram-secrets: "${sha256sum:telegram-alertmanager-secret}"
+
   ingress:
     enabled: true
     ingressClassName: webapprouting.kubernetes.azure.com
@@ -34,126 +65,167 @@ alertmanager:
       nginx.ingress.kubernetes.io/auth-url: "https://oauth2.dev.audioprothese.ovh/oauth2/auth"
       nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.dev.audioprothese.ovh/oauth2/start?rd=$scheme://$host$escaped_request_uri"
 
+  #################################
+  # Alertmanager Configuration
+  #################################
   config:
     global:
       resolve_timeout: 5m
 
     route:
-      group_by: ['alertname', 'cluster', 'service']
+      group_by: ['alertname', 'cluster', 'service', 'namespace']
       group_wait: 10s
       group_interval: 10s
       repeat_interval: 12h
-      receiver: 'ticket-webhook'
+      receiver: ticket-webhook
       routes:
         - match:
             severity: critical
-          receiver: 'critical-ticket-webhook'
+          receiver: critical-ticket-webhook
           group_wait: 0s
           repeat_interval: 1h
-        
+
         - match:
             severity: warning
-          receiver: 'warning-ticket-webhook'
+          receiver: warning-ticket-webhook
           group_wait: 5m
           repeat_interval: 6h
 
     receivers:
-      - name: 'ticket-webhook'
+      ## === Generic receiver (all alerts) ========= ##
+      - name: ticket-webhook
         telegram_configs:
-          - bot_token: '7728769790:AAHMvWSa9KU-gtOknUr3WW-T7D2eNa9vbQA'
-            chat_id: -1002316835762 
-            api_url: 'https://api.telegram.org'
+          - bot_token_file: /etc/alertmanager/secrets/telegram-alertmanager-secret/telegram_bot_token
+            chat_id_file: /etc/alertmanager/secrets/telegram-alertmanager-secret/telegram_chat_id
+            api_url: https://api.telegram.org
             send_resolved: true
-            parse_mode: 'HTML'
-            message: |
-              <b>🎯 ALERTE MONITORING</b>
-              
-              <b>Service:</b> {{ .GroupLabels.service | default "inconnu" }}
-              <b>Environnement:</b> {{ .GroupLabels.cluster | default "dev" }}
-              <b>Sévérité:</b> {{ .GroupLabels.severity | default "info" }}
-              
-              {{ range .Alerts }}
-              <b>📋 {{ .Annotations.summary }}</b>
-              {{ .Annotations.description }}
-              <i>Instance:</i> {{ .Labels.instance }}
-              <i>Statut:</i> {{ .Status }}
-              <i>Début:</i> {{ .StartsAt.Format "15:04:05" }}
-              {{ if .EndsAt }}
-              <i>Résolu:</i> {{ .EndsAt.Format "15:04:05" }}
-              {{ end }}
-              
+            parse_mode: HTML
+            message: >-
+              🚨 <b>Prometheus Alert</b>
+
+
+              <b>Service:</b> {{ with .GroupLabels.service }}{{ . }}{{ else }}n/a{{ end }}
+
+              <b>Environment:</b> {{ with .GroupLabels.cluster }}{{ . }}{{ else }}{{ with .GroupLabels.namespace }}{{ . }}{{ else }}dev{{ end }}{{ end }}
+
+              <b>Namespace:</b> {{ with .GroupLabels.namespace }}{{ . }}{{ else }}default{{ end }}
+
+              <b>Severity:</b> {{ with .GroupLabels.severity }}{{ . }}{{ else }}info{{ end }}
+
+
+              {{ range .Alerts -}}
+
+              <b>📋 {{ with .Annotations.summary }}{{ . }}{{ else }}{{ .Labels.alertname }}{{ end }}</b>
+
+              {{ with .Annotations.description }}{{ . }}{{ else }}No description{{ end }}
+
+              <i>Instance:</i> {{ with .Labels.instance }}{{ . }}{{ else }}{{ with .Labels.pod }}{{ . }}{{ else }}?{{ end }}{{ end }}
+
+              <i>Namespace:</i> {{ with .Labels.namespace }}{{ . }}{{ else }}{{ with .Labels.exported_namespace }}{{ . }}{{ else }}-{{ end }}{{ end }}
+
+              <i>Status:</i> {{ .Status }}
+
+              <i>Start:</i> {{ .StartsAt.Format "2006-01-02 15:04:05" }}
+              {{- if ne .EndsAt.Unix 0 }}
+
+              <i>Resolved:</i> {{ .EndsAt.Format "2006-01-02 15:04:05" }}
+              {{- end }}
+
+
               {{ end }}
 
-      - name: 'critical-ticket-webhook'
+      ## === WARNING Receiver ============================ ##
+      - name: warning-ticket-webhook
         telegram_configs:
-          - bot_token: '7728769790:AAHMvWSa9KU-gtOknUr3WW-T7D2eNa9vbQA'
-            chat_id: -1002316835762  
-            api_url: 'https://api.telegram.org'
+          - bot_token_file: /etc/alertmanager/secrets/telegram-alertmanager-secret/telegram_bot_token
+            chat_id_file: /etc/alertmanager/secrets/telegram-alertmanager-secret/telegram_chat_id
+            api_url: https://api.telegram.org
             send_resolved: true
-            parse_mode: 'HTML'
-            message: |
-              <b>🚨 ALERTE CRITIQUE 🚨</b>
-              @here @channel
-              
-              <b>Service:</b> {{ .GroupLabels.service | default "inconnu" }}
-              <b>Environnement:</b> {{ .GroupLabels.cluster | default "dev" }}
-              <b>Priorité:</b> HAUTE - ACTION IMMÉDIATE
-              
-              {{ range .Alerts }}
-              <b>⚠️ {{ .Annotations.summary }}</b>
-              {{ .Annotations.description }}
-              <i>Instance:</i> {{ .Labels.instance }}
-              <i>Valeur:</i> {{ .Annotations.current_value | default "N/A" }}
-              <i>Seuil:</i> {{ .Annotations.threshold | default "N/A" }}
-              <i>Début:</i> {{ .StartsAt.Format "15:04:05" }}
+            parse_mode: HTML
+            message: >-
+              ⚠️ <b>WARNING Alert</b>
+
+
+              <b>Service:</b> {{ with .GroupLabels.service }}{{ . }}{{ else }}n/a{{ end }}
+
+              <b>Environment:</b> {{ with .GroupLabels.cluster }}{{ . }}{{ else }}{{ with .GroupLabels.namespace }}{{ . }}{{ else }}dev{{ end }}{{ end }}
+
+              <b>Namespace:</b> {{ with .GroupLabels.namespace }}{{ . }}{{ else }}default{{ end }}
+
+
+              {{ range .Alerts -}}
+
+              <b>{{ with .Annotations.summary }}{{ . }}{{ else }}{{ .Labels.alertname }}{{ end }}</b>
+
+              {{ with .Annotations.description }}{{ . }}{{ else }}No description{{ end }}
+
+              <i>Instance:</i> {{ with .Labels.instance }}{{ . }}{{ else }}{{ with .Labels.pod }}{{ . }}{{ else }}?{{ end }}{{ end }}
+
+              <i>Namespace:</i> {{ with .Labels.namespace }}{{ . }}{{ else }}{{ with .Labels.exported_namespace }}{{ . }}{{ else }}-{{ end }}{{ end }}
+
+
               {{ end }}
 
-      - name: 'warning-ticket-webhook'
+      ## === CRITICAL Receiver =========================== ##  
+      - name: critical-ticket-webhook
         telegram_configs:
-          - bot_token: '7728769790:AAHMvWSa9KU-gtOknUr3WW-T7D2eNa9vbQA'
-            chat_id: -1002316835762
-            api_url: 'https://api.telegram.org'
+          - bot_token_file: /etc/alertmanager/secrets/telegram-alertmanager-secret/telegram_bot_token
+            chat_id_file: /etc/alertmanager/secrets/telegram-alertmanager-secret/telegram_chat_id
+            api_url: https://api.telegram.org
             send_resolved: true
-            parse_mode: 'HTML'
-            message: |
-              <b>⚠️ WARNING</b>
-              
-              <b>Service:</b> {{ .GroupLabels.service | default "inconnu" }}
-              <b>Environnement:</b> {{ .GroupLabels.cluster | default "dev" }}
-              
-              {{ range .Alerts }}
-              <b>{{ .Annotations.summary }}</b>
-              {{ .Annotations.description }}
-              <i>Instance:</i> {{ .Labels.instance }}
+            parse_mode: HTML
+            message: >-
+              🚨 <b>CRITICAL ALERT</b> @here
+
+
+              <b>Service:</b> {{ with .GroupLabels.service }}{{ . }}{{ else }}n/a{{ end }}
+
+              <b>Environment:</b> {{ with .GroupLabels.cluster }}{{ . }}{{ else }}{{ with .GroupLabels.namespace }}{{ . }}{{ else }}dev{{ end }}{{ end }}
+
+              <b>Namespace:</b> {{ with .GroupLabels.namespace }}{{ . }}{{ else }}default{{ end }}
+
+              <b>Priority:</b> HIGH - immediate action required!
+
+
+              {{ range .Alerts -}}
+
+              <b>⚠️ {{ with .Annotations.summary }}{{ . }}{{ else }}{{ .Labels.alertname }}{{ end }}</b>
+
+              {{ with .Annotations.description }}{{ . }}{{ else }}No description{{ end }}
+
+              <i>Instance:</i> {{ with .Labels.instance }}{{ . }}{{ else }}{{ with .Labels.pod }}{{ . }}{{ else }}?{{ end }}{{ end }}
+
+              <i>Namespace:</i> {{ with .Labels.namespace }}{{ . }}{{ else }}{{ with .Labels.exported_namespace }}{{ . }}{{ else }}-{{ end }}{{ end }}
+
+
               {{ end }}
 
     inhibit_rules:
       - source_match:
-          severity: 'critical'
+          severity: critical
         target_match:
-          severity: 'warning'
+          severity: warning
         equal: ['alertname', 'instance']
 
 grafana:
   ingress:
     enabled: true
+    ingressClassName: webapprouting.kubernetes.azure.com
+    hosts:
+      - grafana.dev.audioprothese.ovh
+    path: /
+    pathType: Prefix
+    tls:
+      - hosts:
+          - grafana.dev.audioprothese.ovh
+        secretName: grafana-tls
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       nginx.ingress.kubernetes.io/auth-url: "https://oauth2.dev.audioprothese.ovh/oauth2/auth"
       nginx.ingress.kubernetes.io/auth-signin: "https://oauth2.dev.audioprothese.ovh/oauth2/start?rd=$scheme://$host$escaped_request_uri"
       nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Request-User, X-Auth-Request-Email
-    labels: {}
-    path: /
-    pathType: Prefix
-    hosts:
-      - grafana.dev.audioprothese.ovh
-    tls:
-      - hosts:
-          - grafana.dev.audioprothese.ovh
-        secretName: grafana-tls
-    ingressClassName: "webapprouting.kubernetes.azure.com"
-  
+
   datasources:
     datasources.yaml:
       apiVersion: 1
@@ -172,13 +244,13 @@ grafana:
 
     auth:
       disable_login_form: true
-      
+
     auth.proxy:
       enabled: true
       header_name: X-Auth-Request-Email
       header_property: email
       auto_sign_up: true
-    
+
     users:
       auto_assign_org: true
       auto_assign_org_role: Admin
