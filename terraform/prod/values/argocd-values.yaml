@@ -1,0 +1,34 @@
+global:
+  domain: argocd.audioprothese.ovh
+
+certificate:
+  enabled: true
+
+server:
+  autoscaling:
+    enabled: false
+  ingress:
+    enabled: true
+    ingressClassName: webapprouting.kubernetes.azure.com
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      appgw.ingress.kubernetes.io/backend-protocol: "https"
+    tls: true
+
+redis-ha:
+  enabled: false
+
+controller:
+  replicas: 1
+
+repoServer:
+  autoscaling:
+    enabled: false
+
+applicationSet:
+  replicas: 1
+
+configs:
+  params:
+    server.insecure: true
