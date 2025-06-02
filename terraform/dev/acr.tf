@@ -1,6 +1,6 @@
-##########################
+#########################
 # Resource Group
-##########################
+#########################
 
 resource "azurerm_container_registry" "acr" {
   name                = "${var.project}acr${var.env}"
