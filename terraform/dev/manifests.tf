@@ -90,35 +90,35 @@ YAML
 # # ESO ExternalSecret
 # ###############################
 
-# resource "kubectl_manifest" "externalsecret" {
-#   depends_on = [helm_release.eso, heml_release.oauth2_proxy]
-#   yaml_body  = <<YAML
-# apiVersion: external-secrets.io/v1
-# kind: ExternalSecret
-# metadata:
-#   name: oauth2-proxy-secret
-#   namespace: authgate
-# spec:
-#   refreshPolicy: Periodic
-#   refreshInterval: 1h
-#   secretStoreRef:
-#     name: azure-secret-store
-#     kind: ClusterSecretStore
-#   target:
-#     name: oauth2-proxy-secret
-#     creationPolicy: Owner
-#   data:
-#   - secretKey: client-id
-#     remoteRef:
-#       key: oauth2-proxy-client-id
-#   - secretKey: client-secret
-#     remoteRef:
-#       key: oauth2-proxy-client-secret
-#   - secretKey: cookie-secret
-#     remoteRef:
-#       key: oauth2-proxy-cookie-secret
-# YAML
-# }
+resource "kubectl_manifest" "externalsecret" {
+  depends_on = [helm_release.eso, heml_release.oauth2_proxy]
+  yaml_body  = <<YAML
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: oauth2-proxy-secret
+  namespace: authgate
+spec:
+  refreshPolicy: Periodic
+  refreshInterval: 1h
+  secretStoreRef:
+    name: azure-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: oauth2-proxy-secret
+    creationPolicy: Owner
+  data:
+  - secretKey: client-id
+    remoteRef:
+      key: oauth2-proxy-client-id
+  - secretKey: client-secret
+    remoteRef:
+      key: oauth2-proxy-client-secret
+  - secretKey: cookie-secret
+    remoteRef:
+      key: oauth2-proxy-cookie-secret
+YAML
+}
 
 # ###############################
 # # Telegram Alertmanager Secret
