@@ -91,7 +91,7 @@
 # ###############################
 
 # resource "kubectl_manifest" "externalsecret" {
-#   depends_on = [helm_release.eso]
+#   depends_on = [helm_release.eso, heml_release.oauth2_proxy]
 #   yaml_body  = <<YAML
 # apiVersion: external-secrets.io/v1
 # kind: ExternalSecret
@@ -125,7 +125,7 @@
 # ###############################
 
 # resource "kubectl_manifest" "telegram_secret" {
-#   depends_on = [helm_release.eso]
+#   depends_on = [helm_release.eso, helm_release.prometheus]
 #   yaml_body  = <<YAML
 # apiVersion: external-secrets.io/v1
 # kind: ExternalSecret

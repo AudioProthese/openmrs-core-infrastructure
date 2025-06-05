@@ -15,6 +15,68 @@
 #   ]
 # }
 
+# #############################
+# # Cert Manager Helm Chart
+# #############################
+
+# resource "helm_release" "cert_manager" {
+#   depends_on       = [azurerm_kubernetes_cluster.aks]
+#   name             = "cert-manager"
+#   namespace        = "cert-manager"
+#   repository       = "https://charts.jetstack.io"
+#   chart            = "cert-manager"
+#   create_namespace = true
+#   version          = "v1.17.2"
+#   values = [
+#     "${file("./values/cert-manager-values.yaml")}"
+#   ]
+# }
+
+# #############################
+# # ESO Helm Chart
+# #############################
+
+# resource "helm_release" "eso" {
+#   depends_on       = [azurerm_kubernetes_cluster.aks] # plus besoin de kubectl_manifest.sa
+#   name             = "eso"
+#   namespace        = "eso"
+#   repository       = "https://charts.external-secrets.io"
+#   chart            = "external-secrets"
+#   version          = "0.17.0"
+#   create_namespace = true
+
+#   values = [
+#     yamlencode({
+#       installCRDs = true
+
+#       serviceAccount = {
+#         create = true
+#         name   = "workload-identity-sa"
+#         annotations = {
+#           "azure.workload.identity/client-id" = azurerm_user_assigned_identity.eso_workload_identity.client_id
+#         }
+#       }
+#     })
+#   ]
+# }
+
+# #############################
+# # Oauth2-proxy Helm Chart
+# #############################
+
+# resource "helm_release" "oauth2_proxy" {
+#   depends_on       = [azurerm_kubernetes_cluster.aks, helm_release.eso]
+#   name             = "oauth2-proxy"
+#   namespace        = "authgate"
+#   repository       = "https://oauth2-proxy.github.io/manifests"
+#   chart            = "oauth2-proxy"
+#   create_namespace = true
+#   version          = "7.12.13"
+#   values = [
+#     file("./values/oauth2-proxy-values.yaml")
+#   ]
+# }
+
 # ##########################
 # # Prometheus Helm Chart
 # ##########################
@@ -66,22 +128,6 @@
 #   ]
 # }
 
-# #############################
-# # Cert Manager Helm Chart
-# #############################
-
-# resource "helm_release" "cert_manager" {
-#   depends_on       = [azurerm_kubernetes_cluster.aks]
-#   name             = "cert-manager"
-#   namespace        = "cert-manager"
-#   repository       = "https://charts.jetstack.io"
-#   chart            = "cert-manager"
-#   create_namespace = true
-#   version          = "v1.17.2"
-#   values = [
-#     "${file("./values/cert-manager-values.yaml")}"
-#   ]
-# }
 
 # #############################
 # # ArgoCD Helm Chart
@@ -97,49 +143,5 @@
 #   version          = "8.0.3"
 #   values = [
 #     "${file("./values/argocd-values.yaml")}"
-#   ]
-# }
-
-# #############################
-# # Oauth2-proxy Helm Chart
-# #############################
-
-# resource "helm_release" "oauth2_proxy" {
-#   depends_on       = [azurerm_kubernetes_cluster.aks, helm_release.eso]
-#   name             = "oauth2-proxy"
-#   namespace        = "authgate"
-#   repository       = "https://oauth2-proxy.github.io/manifests"
-#   chart            = "oauth2-proxy"
-#   create_namespace = true
-#   version          = "7.12.13"
-#   values = [
-#     file("./values/oauth2-proxy-values.yaml")
-#   ]
-# }
-
-# # ESO Helm Chart
-# #############################
-
-# resource "helm_release" "eso" {
-#   depends_on       = [azurerm_kubernetes_cluster.aks] # plus besoin de kubectl_manifest.sa
-#   name             = "eso"
-#   namespace        = "eso"
-#   repository       = "https://charts.external-secrets.io"
-#   chart            = "external-secrets"
-#   version          = "0.17.0"
-#   create_namespace = true
-
-#   values = [
-#     yamlencode({
-#       installCRDs = true
-
-#       serviceAccount = {
-#         create = true
-#         name   = "workload-identity-sa"
-#         annotations = {
-#           "azure.workload.identity/client-id" = azurerm_user_assigned_identity.eso_workload_identity.client_id
-#         }
-#       }
-#     })
 #   ]
 # }
