@@ -8,4 +8,6 @@
 
 *This Git repository contains the source code to set up and manage AudioProthese+ infrastructure using Terraform.*
 
+## AudioProthèse+ Infrastructure Wiki
+
 Full infrastructure documentation is available here : <https://audioprothese.github.io/openmrs-architecture-documentation/infrastructure/iac/>
