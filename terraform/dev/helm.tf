@@ -1,36 +1,36 @@
-# ##########################
-# # OpenMRS Helm Chart
-# ##########################
+##########################
+# OpenMRS Helm Chart
+##########################
 
-# resource "helm_release" "openmrs" {
-#   depends_on       = [azurerm_kubernetes_cluster.aks]
-#   name             = "openmrs"
-#   namespace        = "openmrs"
-#   repository       = "oci://registry-1.docker.io/openmrs"
-#   chart            = "openmrs"
-#   create_namespace = true
-#   version          = "0.1.5"
-#   values = [
-#     "${file("./values/openmrs-values.yaml")}"
-#   ]
-# }
+resource "helm_release" "openmrs" {
+  depends_on       = [azurerm_kubernetes_cluster.aks]
+  name             = "openmrs"
+  namespace        = "openmrs"
+  repository       = "oci://registry-1.docker.io/openmrs"
+  chart            = "openmrs"
+  create_namespace = true
+  version          = "0.1.5"
+  values = [
+    "${file("./values/openmrs-values.yaml")}"
+  ]
+}
 
-# #############################
-# # Cert Manager Helm Chart
-# #############################
+#############################
+# Cert Manager Helm Chart
+#############################
 
-# resource "helm_release" "cert_manager" {
-#   depends_on       = [azurerm_kubernetes_cluster.aks]
-#   name             = "cert-manager"
-#   namespace        = "cert-manager"
-#   repository       = "https://charts.jetstack.io"
-#   chart            = "cert-manager"
-#   create_namespace = true
-#   version          = "v1.17.2"
-#   values = [
-#     "${file("./values/cert-manager-values.yaml")}"
-#   ]
-# }
+resource "helm_release" "cert_manager" {
+  depends_on       = [azurerm_kubernetes_cluster.aks]
+  name             = "cert-manager"
+  namespace        = "cert-manager"
+  repository       = "https://charts.jetstack.io"
+  chart            = "cert-manager"
+  create_namespace = true
+  version          = "v1.17.2"
+  values = [
+    "${file("./values/cert-manager-values.yaml")}"
+  ]
+}
 
 # #############################
 # # ESO Helm Chart
