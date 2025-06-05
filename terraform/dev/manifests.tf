@@ -124,29 +124,29 @@ YAML
 # # Telegram Alertmanager Secret
 # ###############################
 
-# resource "kubectl_manifest" "telegram_secret" {
-#   depends_on = [helm_release.eso, helm_release.prometheus]
-#   yaml_body  = <<YAML
-# apiVersion: external-secrets.io/v1
-# kind: ExternalSecret
-# metadata:
-#   name: telegram-alertmanager-secret
-#   namespace: monitoring
-# spec:
-#   refreshPolicy: Periodic
-#   refreshInterval: 1h
-#   secretStoreRef:
-#     name: azure-secret-store
-#     kind: ClusterSecretStore
-#   target:
-#     name: telegram-alertmanager-secret
-#     creationPolicy: Owner
-#   data:
-#   - secretKey: telegram_bot_token
-#     remoteRef:
-#       key: telegram-bot-token
-#   - secretKey: telegram_chat_id
-#     remoteRef:
-#       key: telegram-chat-id
-# YAML
-# }
+resource "kubectl_manifest" "telegram_secret" {
+  depends_on = [helm_release.eso, helm_release.prometheus-stack]
+  yaml_body  = <<YAML
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: telegram-alertmanager-secret
+  namespace: monitoring
+spec:
+  refreshPolicy: Periodic
+  refreshInterval: 1h
+  secretStoreRef:
+    name: azure-secret-store
+    kind: ClusterSecretStore
+  target:
+    name: telegram-alertmanager-secret
+    creationPolicy: Owner
+  data:
+  - secretKey: telegram_bot_token
+    remoteRef:
+      key: telegram-bot-token
+  - secretKey: telegram_chat_id
+    remoteRef:
+      key: telegram-chat-id
+YAML
+}
