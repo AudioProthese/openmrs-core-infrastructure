@@ -125,7 +125,7 @@ YAML
 # ###############################
 
 resource "kubectl_manifest" "telegram_secret" {
-  depends_on = [helm_release.eso, helm_release.prometheus]
+  depends_on = [helm_release.eso, helm_release.prometheus-stack]
   yaml_body  = <<YAML
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
