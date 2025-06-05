@@ -67,24 +67,24 @@ YAML
 # # ESO ClusterSecretStore
 # ##############################
 
-# resource "kubectl_manifest" "cluster_secretstore" {
-#   depends_on = [helm_release.eso]
-#   yaml_body  = <<YAML
-# apiVersion: external-secrets.io/v1
-# kind: ClusterSecretStore
-# metadata:
-#   name: azure-secret-store
-# spec:
-#   provider:
-#     azurekv:
-#       authType: WorkloadIdentity
-#       vaultUrl: ${azurerm_key_vault.vault.vault_uri}
-#       tenantId: ${azurerm_key_vault.vault.tenant_id}
-#       serviceAccountRef:
-#         name: workload-identity-sa
-#         namespace: eso
-# YAML
-# }
+resource "kubectl_manifest" "cluster_secretstore" {
+  depends_on = [helm_release.eso]
+  yaml_body  = <<YAML
+apiVersion: external-secrets.io/v1
+kind: ClusterSecretStore
+metadata:
+  name: azure-secret-store
+spec:
+  provider:
+    azurekv:
+      authType: WorkloadIdentity
+      vaultUrl: ${azurerm_key_vault.vault.vault_uri}
+      tenantId: ${azurerm_key_vault.vault.tenant_id}
+      serviceAccountRef:
+        name: workload-identity-sa
+        namespace: eso
+YAML
+}
 
 # ###############################
 # # ESO ExternalSecret

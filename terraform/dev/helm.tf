@@ -36,29 +36,29 @@ resource "helm_release" "cert_manager" {
 # # ESO Helm Chart
 # #############################
 
-# resource "helm_release" "eso" {
-#   depends_on       = [azurerm_kubernetes_cluster.aks] # plus besoin de kubectl_manifest.sa
-#   name             = "eso"
-#   namespace        = "eso"
-#   repository       = "https://charts.external-secrets.io"
-#   chart            = "external-secrets"
-#   version          = "0.17.0"
-#   create_namespace = true
+resource "helm_release" "eso" {
+  depends_on       = [azurerm_kubernetes_cluster.aks] # plus besoin de kubectl_manifest.sa
+  name             = "eso"
+  namespace        = "eso"
+  repository       = "https://charts.external-secrets.io"
+  chart            = "external-secrets"
+  version          = "0.17.0"
+  create_namespace = true
 
-#   values = [
-#     yamlencode({
-#       installCRDs = true
+  values = [
+    yamlencode({
+      installCRDs = true
 
-#       serviceAccount = {
-#         create = true
-#         name   = "workload-identity-sa"
-#         annotations = {
-#           "azure.workload.identity/client-id" = azurerm_user_assigned_identity.eso_workload_identity.client_id
-#         }
-#       }
-#     })
-#   ]
-# }
+      serviceAccount = {
+        create = true
+        name   = "workload-identity-sa"
+        annotations = {
+          "azure.workload.identity/client-id" = azurerm_user_assigned_identity.eso_workload_identity.client_id
+        }
+      }
+    })
+  ]
+}
 
 # #############################
 # # Oauth2-proxy Helm Chart
